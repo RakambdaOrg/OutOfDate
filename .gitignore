@@ -1,0 +1,8 @@
+config.json
+*.iml
+.idea
+target
+
+products.json
+
+logs/
