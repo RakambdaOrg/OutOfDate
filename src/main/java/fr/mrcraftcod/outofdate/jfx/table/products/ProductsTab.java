@@ -1,4 +1,4 @@
-package fr.mrcraftcod.outofdate.jfx.table;
+package fr.mrcraftcod.outofdate.jfx.table.products;
 
 import fr.mrcraftcod.outofdate.jfx.MainController;
 import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;

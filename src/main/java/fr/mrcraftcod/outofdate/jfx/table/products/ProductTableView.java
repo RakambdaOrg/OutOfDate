@@ -1,4 +1,4 @@
-package fr.mrcraftcod.outofdate.jfx.table;
+package fr.mrcraftcod.outofdate.jfx.table.products;
 
 import fr.mrcraftcod.outofdate.jfx.EditProductView;
 import fr.mrcraftcod.outofdate.jfx.MainController;
@@ -27,7 +27,7 @@ public class ProductTableView extends TableView<Product>{
 	private final MainController controller;
 	
 	public ProductTableView(final Stage parentStage, final MainController controller){
-		super(controller.getProducts());
+		super(controller.getProducts().filtered(p -> !p.isConsumed()));
 		this.controller = controller;
 		
 		final Consumer<Product> onProductEdit = product -> new EditProductView(parentStage, product);

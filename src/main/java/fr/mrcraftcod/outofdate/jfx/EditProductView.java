@@ -59,7 +59,10 @@ public class EditProductView{
 		subCountBox.getChildren().addAll(subCountLabel, subCountField);
 		HBox.setHgrow(subCountField, Priority.ALWAYS);
 		
-		root.getChildren().addAll(datePicker, isOpenCheck, subCountBox);
+		final var isConsumedCheck = new CheckBox(LangUtils.getString("edit_product_consumed_label"));
+		isConsumedCheck.selectedProperty().bindBidirectional(product.isConsumedProperty());
+		
+		root.getChildren().addAll(datePicker, isOpenCheck, subCountBox, isConsumedCheck);
 		return root;
 	}
 }

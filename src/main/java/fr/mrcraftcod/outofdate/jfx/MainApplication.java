@@ -1,6 +1,7 @@
 package fr.mrcraftcod.outofdate.jfx;
 
-import fr.mrcraftcod.outofdate.jfx.table.ProductsTab;
+import fr.mrcraftcod.outofdate.jfx.table.consumed.ConsumedProductsTab;
+import fr.mrcraftcod.outofdate.jfx.table.products.ProductsTab;
 import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
 import fr.mrcraftcod.utils.javafx.ApplicationBase;
 import javafx.scene.Parent;
@@ -27,6 +28,7 @@ public class MainApplication extends ApplicationBase{
 	private MainController controller;
 	private TabPane tabPane;
 	private ProductsTab productsTab;
+	private ConsumedProductsTab consumedProductsTab;
 	
 	@Override
 	public void preInit() throws Exception{
@@ -59,9 +61,10 @@ public class MainApplication extends ApplicationBase{
 		final var borderPane = new BorderPane();
 		
 		this.productsTab = new ProductsTab(stage, this.controller);
+		this.consumedProductsTab = new ConsumedProductsTab(stage, this.controller);
 		
 		this.tabPane = new TabPane();
-		this.tabPane.getTabs().add(this.productsTab);
+		this.tabPane.getTabs().addAll(this.productsTab, this.consumedProductsTab);
 		
 		borderPane.setTop(constructMenuBar());
 		borderPane.setCenter(this.tabPane);

@@ -81,6 +81,9 @@ public class MainController{
 		if(json.has("subCount")){
 			product.setSubCount(json.getInt("subCount"));
 		}
+		if(json.has("isConsumed")){
+			product.setIsConsumed(json.getBoolean("isConsumed"));
+		}
 		return product;
 	}
 	
@@ -103,6 +106,7 @@ public class MainController{
 			}
 			obj.put("isOpen", p.isOpen());
 			obj.put("subCount", p.getSubCount());
+			obj.put("isConsumed", p.isConsumed());
 			products.put(obj);
 		});
 		final var json = new JSONObject();

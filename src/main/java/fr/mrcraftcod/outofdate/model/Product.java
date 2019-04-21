@@ -24,6 +24,7 @@ public class Product{
 	private final SimpleObjectProperty<LocalDate> spoilDate;
 	private final SimpleLongProperty daysLeft;
 	private final SimpleIntegerProperty subCount;
+	private final SimpleBooleanProperty isConsumed;
 	
 	public Product(final String id, final String name, final URL image){
 		this.ID = id;
@@ -34,6 +35,19 @@ public class Product{
 		this.daysLeft = new SimpleLongProperty(-1);
 		this.isOpen = new SimpleBooleanProperty(false);
 		this.subCount = new SimpleIntegerProperty(0);
+		this.isConsumed = new SimpleBooleanProperty(false);
+	}
+	
+	public SimpleBooleanProperty isConsumedProperty(){
+		return isConsumed;
+	}
+	
+	public boolean isConsumed(){
+		return isConsumed.get();
+	}
+	
+	public void setIsConsumed(final boolean isConsumed){
+		this.isConsumed.set(isConsumed);
 	}
 	
 	public SimpleIntegerProperty subCountProperty(){
