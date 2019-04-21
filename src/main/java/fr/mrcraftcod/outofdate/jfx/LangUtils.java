@@ -19,7 +19,7 @@ public class LangUtils{
 	
 	private static ResourceBundle getBundle(){
 		if(bundle == null){
-			bundle = ResourceBundle.getBundle("/jfx/lang/strings", new Locale("en", "EN"));
+			bundle = ResourceBundle.getBundle("jfx/lang/strings", new Locale("en", "EN"));
 		}
 		return bundle;
 	}
