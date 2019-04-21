@@ -1,4 +1,4 @@
-package fr.mrcraftcod.outofdate.jfx;
+package fr.mrcraftcod.outofdate.jfx.utils;
 
 import java.util.Locale;
 import java.util.ResourceBundle;

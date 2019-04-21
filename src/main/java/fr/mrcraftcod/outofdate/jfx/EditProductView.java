@@ -1,5 +1,7 @@
 package fr.mrcraftcod.outofdate.jfx;
 
+import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
+import fr.mrcraftcod.outofdate.jfx.utils.NumberTextField;
 import fr.mrcraftcod.outofdate.model.Product;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -46,15 +48,18 @@ public class EditProductView{
 		datePicker.setOnAction(event -> product.setSpoilDate(datePicker.getValue()));
 		datePicker.valueProperty().bindBidirectional(product.spoilDateProperty());
 		
-		final var isOpenLabel = new Text("");
 		final var isOpenCheck = new CheckBox(LangUtils.getString("edit_product_open_label"));
 		isOpenCheck.selectedProperty().bindBidirectional(product.isOpenProperty());
 		
-		final var isOpenBox = new HBox();
-		isOpenBox.getChildren().addAll(isOpenLabel, isOpenCheck);
-		HBox.setHgrow(isOpenLabel, Priority.ALWAYS);
+		final var subCountLabel = new Text(LangUtils.getString("edit_product_sub_count_label"));
+		final var subCountField = new NumberTextField(product.getSubCount());
+		subCountField.numberProperty().bindBidirectional(product.subCountProperty());
 		
-		root.getChildren().addAll(datePicker, isOpenBox);
+		final var subCountBox = new HBox();
+		subCountBox.getChildren().addAll(subCountLabel, subCountField);
+		HBox.setHgrow(subCountField, Priority.ALWAYS);
+		
+		root.getChildren().addAll(datePicker, isOpenCheck, subCountBox);
 		return root;
 	}
 }

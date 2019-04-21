@@ -1,4 +1,4 @@
-package fr.mrcraftcod.outofdate.jfx;
+package fr.mrcraftcod.outofdate.jfx.table.cells;
 
 import fr.mrcraftcod.outofdate.model.Product;
 import javafx.geometry.Pos;
@@ -14,7 +14,7 @@ import java.util.function.Consumer;
  * @since 2019-04-20
  */
 public class ProductTableCell<T> extends TableCell<Product, T>{
-	ProductTableCell(final Consumer<Product> onEditProduct){
+	public ProductTableCell(final Consumer<Product> onEditProduct){
 		this.setAlignment(Pos.CENTER);
 		this.setTextAlignment(TextAlignment.CENTER);
 		this.setWrapText(true);

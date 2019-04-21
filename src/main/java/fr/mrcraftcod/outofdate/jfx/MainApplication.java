@@ -1,12 +1,20 @@
 package fr.mrcraftcod.outofdate.jfx;
 
+import fr.mrcraftcod.outofdate.jfx.table.ProductsTab;
+import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
 import fr.mrcraftcod.utils.javafx.ApplicationBase;
 import javafx.scene.Parent;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -67,6 +75,18 @@ public class MainApplication extends ApplicationBase{
 			menuBar.useSystemMenuBarProperty().set(true);
 		}
 		
+		final var menuProductAdd = new MenuItem(LangUtils.getString("menu_bar_product_add"));
+		menuProductAdd.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
+		menuProductAdd.setOnAction(evt -> {
+			if(Objects.nonNull(this.productsTab)){
+				this.productsTab.addProduct();
+			}
+		});
+		
+		final var menuProduct = new Menu(LangUtils.getString("menu_bar_product"));
+		menuProduct.getItems().addAll(menuProductAdd);
+		
+		menuBar.getMenus().addAll(menuProduct);
 		return menuBar;
 	}
 }

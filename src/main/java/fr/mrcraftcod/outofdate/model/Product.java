@@ -1,6 +1,7 @@
 package fr.mrcraftcod.outofdate.model;
 
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -22,6 +23,7 @@ public class Product{
 	private final URL image;
 	private final SimpleObjectProperty<LocalDate> spoilDate;
 	private final SimpleLongProperty daysLeft;
+	private final SimpleIntegerProperty subCount;
 	
 	public Product(final String id, final String name, final URL image){
 		this.ID = id;
@@ -31,6 +33,19 @@ public class Product{
 		this.spoilDate.addListener(evt -> this.updateRemainingDays());
 		this.daysLeft = new SimpleLongProperty(-1);
 		this.isOpen = new SimpleBooleanProperty(false);
+		this.subCount = new SimpleIntegerProperty(0);
+	}
+	
+	public SimpleIntegerProperty subCountProperty(){
+		return subCount;
+	}
+	
+	public int getSubCount(){
+		return subCount.get();
+	}
+	
+	public void setSubCount(final int subCount){
+		this.subCount.set(subCount);
 	}
 	
 	public void updateRemainingDays(){

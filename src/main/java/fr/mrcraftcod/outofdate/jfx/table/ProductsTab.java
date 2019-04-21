@@ -1,5 +1,7 @@
-package fr.mrcraftcod.outofdate.jfx;
+package fr.mrcraftcod.outofdate.jfx.table;
 
+import fr.mrcraftcod.outofdate.jfx.MainController;
+import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
 import fr.mrcraftcod.outofdate.utils.OpenFoodFacts;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -34,15 +36,7 @@ public class ProductsTab extends Tab{
 		
 		final var addProductButton = new Button(LangUtils.getString("products_tab_add_product_button"));
 		addProductButton.setMaxWidth(Double.MAX_VALUE);
-		addProductButton.setOnAction(evt -> {
-			final var dialog = new TextInputDialog("");
-			dialog.setTitle(LangUtils.getString("products_tab_add_product_dialog_title"));
-			dialog.setHeaderText(LangUtils.getString("products_tab_add_product_dialog_header"));
-			dialog.setContentText(LangUtils.getString("products_tab_add_product_dialog_content"));
-			
-			final var result = dialog.showAndWait();
-			result.ifPresent(s -> OpenFoodFacts.getProduct(result.get()).ifPresent(controller::addProduct));
-		});
+		addProductButton.setOnAction(evt -> this.addProduct());
 		
 		final var bottomButtons = new HBox();
 		bottomButtons.getChildren().addAll(addProductButton);
@@ -51,5 +45,15 @@ public class ProductsTab extends Tab{
 		VBox.setVgrow(productsTable, Priority.ALWAYS);
 		root.getChildren().addAll(productsTable, bottomButtons);
 		return root;
+	}
+	
+	public void addProduct(){
+		final var dialog = new TextInputDialog("");
+		dialog.setTitle(LangUtils.getString("products_tab_add_product_dialog_title"));
+		dialog.setHeaderText(LangUtils.getString("products_tab_add_product_dialog_header"));
+		dialog.setContentText(LangUtils.getString("products_tab_add_product_dialog_content"));
+		
+		final var result = dialog.showAndWait();
+		result.ifPresent(s -> OpenFoodFacts.getProduct(result.get()).ifPresent(controller::addProduct));
 	}
 }

@@ -1,5 +1,10 @@
-package fr.mrcraftcod.outofdate.jfx;
+package fr.mrcraftcod.outofdate.jfx.table;
 
+import fr.mrcraftcod.outofdate.jfx.EditProductView;
+import fr.mrcraftcod.outofdate.jfx.MainController;
+import fr.mrcraftcod.outofdate.jfx.table.cells.ImageProductTableCell;
+import fr.mrcraftcod.outofdate.jfx.table.cells.ProductTableCell;
+import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
 import fr.mrcraftcod.outofdate.model.Product;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -47,6 +52,10 @@ public class ProductTableView extends TableView<Product>{
 		columnOpen.setCellValueFactory(obj -> obj.getValue().isOpenProperty());
 		columnOpen.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
 		
-		this.getColumns().addAll(columnID, columnName, columnPicture, columnDaysLeft, columnOpen);
+		final var columnSubCount = new TableColumn<Product, Number>(LangUtils.getString("product_table_column_sub_count"));
+		columnSubCount.setCellValueFactory(obj -> obj.getValue().subCountProperty());
+		columnSubCount.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
+		
+		this.getColumns().addAll(columnID, columnName, columnPicture, columnDaysLeft, columnOpen, columnSubCount);
 	}
 }

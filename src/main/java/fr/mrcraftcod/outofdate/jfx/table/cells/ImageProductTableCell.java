@@ -1,4 +1,4 @@
-package fr.mrcraftcod.outofdate.jfx;
+package fr.mrcraftcod.outofdate.jfx.table.cells;
 
 import fr.mrcraftcod.outofdate.model.Product;
 import javafx.scene.image.Image;

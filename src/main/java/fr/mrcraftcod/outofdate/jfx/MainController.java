@@ -78,6 +78,9 @@ public class MainController{
 		if(json.has("isOpen")){
 			product.setIsOpen(json.getBoolean("isOpen"));
 		}
+		if(json.has("subCount")){
+			product.setSubCount(json.getInt("subCount"));
+		}
 		return product;
 	}
 	
@@ -99,6 +102,7 @@ public class MainController{
 				obj.put("spoilDate", df.format(p.getSpoilDate()));
 			}
 			obj.put("isOpen", p.isOpen());
+			obj.put("subCount", p.getSubCount());
 			products.put(obj);
 		});
 		final var json = new JSONObject();
