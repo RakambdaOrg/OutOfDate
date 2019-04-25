@@ -13,7 +13,7 @@
         <java.version>12</java.version>
         <main.class>fr.mrcraftcod.outofdate.Main</main.class>
         <final.name>OutOfDate</final.name>
-        <mrcraftcod.utils.version>12.0.3</mrcraftcod.utils.version>
+        <mrcraftcod.utils.version>12.0.4</mrcraftcod.utils.version>
         <log4j.version>2.11.2</log4j.version>
         <slf4j.version>1.8.0-beta4</slf4j.version>
         <javafx.version>12</javafx.version>
