@@ -8,6 +8,7 @@ import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
 import fr.mrcraftcod.outofdate.model.Product;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
@@ -27,7 +28,7 @@ public class ConsumedProductTableView extends TableView<Product>{
 	private final MainController controller;
 	
 	public ConsumedProductTableView(final Stage parentStage, final MainController controller){
-		super(controller.getProducts().filtered(Product::isConsumed));
+		super();
 		this.controller = controller;
 		
 		final Consumer<Product> onProductEdit = product -> new EditProductView(parentStage, product);
@@ -57,5 +58,12 @@ public class ConsumedProductTableView extends TableView<Product>{
 		columnSubCount.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
 		
 		this.getColumns().addAll(columnID, columnName, columnPicture, columnDaysLeft, columnOpen, columnSubCount);
+		this.setItems(createList());
+	}
+	
+	private ObservableList<Product> createList(){
+		final var list = controller.getProducts().filtered(Product::isConsumed).sorted();
+		//TODO
+		return list;
 	}
 }

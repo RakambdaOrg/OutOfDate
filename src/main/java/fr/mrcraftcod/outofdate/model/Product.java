@@ -16,7 +16,7 @@ import java.util.Objects;
  * @author Thomas Couchoud
  * @since 2019-04-20
  */
-public class Product{
+public class Product implements Comparable<Product>{
 	private final String ID;
 	private final String name;
 	private final SimpleBooleanProperty isOpen;
@@ -42,6 +42,24 @@ public class Product{
 		return isConsumed;
 	}
 	
+	@Override
+	public int compareTo(final Product o){
+		if(Objects.isNull(this.getSpoilDate()) && Objects.isNull(o.getSpoilDate())){
+			return 0;
+		}
+		if(Objects.isNull(this.getSpoilDate())){
+			return 1;
+		}
+		if(Objects.isNull(o.getSpoilDate())){
+			return -1;
+		}
+		final var diff = Long.compare(this.getDaysLeft(), o.getDaysLeft());
+		if(diff == 0){
+			return Boolean.compare(o.isOpen(), this.isOpen());
+		}
+		return diff;
+	}
+	
 	public boolean isConsumed(){
 		return isConsumed.get();
 	}
@@ -64,7 +82,7 @@ public class Product{
 	
 	public void updateRemainingDays(){
 		if(Objects.isNull(getSpoilDate())){
-			this.daysLeft.set(-1L);
+			this.daysLeft.setValue(-9999999);
 		}
 		else{
 			this.daysLeft.set(LocalDate.now().until(getSpoilDate(), ChronoUnit.DAYS));

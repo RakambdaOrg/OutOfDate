@@ -33,7 +33,6 @@ public class MainController{
 	private final ObservableList<Product> productsList;
 	
 	public MainController(){
-		LOGGER.info("Created controller");
 		this.productsList = FXCollections.observableArrayList();
 		this.loadPreviousProducts(getProductsJsonPath());
 	}
@@ -89,7 +88,6 @@ public class MainController{
 	
 	public void addProduct(final Product product){
 		productsList.add(product);
-		LOGGER.info("LIST: {}", productsList);
 	}
 	
 	public void saveProducts(){
