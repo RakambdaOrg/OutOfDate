@@ -1,6 +1,7 @@
 package fr.mrcraftcod.outofdate.jfx;
 
 import fr.mrcraftcod.outofdate.model.Product;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.json.JSONArray;
@@ -33,7 +34,11 @@ public class MainController{
 	private final ObservableList<Product> productsList;
 	
 	public MainController(){
-		this.productsList = FXCollections.observableArrayList();
+		this.productsList = FXCollections.observableArrayList(p -> new Observable[]{
+				p.spoilDateProperty(),
+				p.isOpenProperty(),
+				p.isConsumedProperty()
+		});
 		this.loadPreviousProducts(getProductsJsonPath());
 	}
 	
