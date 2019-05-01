@@ -19,8 +19,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by mrcraftcod (MrCraftCod - zerderr@gmail.com) on 2019-04-20.
@@ -32,6 +34,7 @@ public class MainController{
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 	private static final DateTimeFormatter df = DateTimeFormatter.ISO_DATE;
 	private final ObservableList<Product> productsList;
+	private final static String productHintSeparator = "~";
 	
 	public MainController(){
 		this.productsList = FXCollections.observableArrayList(p -> new Observable[]{
@@ -62,6 +65,14 @@ public class MainController{
 				LOGGER.error("Failed to read json file {}", path, e);
 			}
 		}
+	}
+	
+	public List<String> getProductsHints(){
+		return this.getProducts().stream().map(p -> String.format("%s%s%s", p.getID(), this.getProductHintSeparator(), p.getName())).distinct().collect(Collectors.toList());
+	}
+	
+	public String getProductHintSeparator(){
+		return productHintSeparator;
 	}
 	
 	private Path getProductsJsonPath(){
