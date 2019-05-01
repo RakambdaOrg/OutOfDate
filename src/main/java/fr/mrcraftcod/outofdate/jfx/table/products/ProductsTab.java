@@ -48,7 +48,7 @@ public class ProductsTab extends Tab{
 	}
 	
 	public void addProduct(){
-		final var dialog = new AutoCompleteTextInputDialog(controller.getProductsHints(), "");
+		final var dialog = new AutoCompleteTextInputDialog(controller.getProductsHints());
 		dialog.setTitle(LangUtils.getString("products_tab_add_product_dialog_title"));
 		dialog.setHeaderText(LangUtils.getString("products_tab_add_product_dialog_header"));
 		dialog.setContentText(LangUtils.getString("products_tab_add_product_dialog_content"));
