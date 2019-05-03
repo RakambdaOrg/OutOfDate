@@ -58,15 +58,23 @@ public class ProductTableView extends TableView<Product>{
 		columnSubCount.setCellValueFactory(obj -> obj.getValue().subCountProperty());
 		columnSubCount.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
 		
-		this.getColumns().addAll(columnID, columnName, columnPicture, columnDaysLeft, columnOpen, columnSubCount);
+		final var columnNutriscore = new TableColumn<Product, String>(LangUtils.getString("product_table_column_nutriscore"));
+		columnNutriscore.setCellValueFactory(obj -> new SimpleStringProperty(obj.getValue().getNutriscore()));
+		columnNutriscore.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
+		
+		this.getColumns().addAll(columnID, columnName, columnPicture, columnDaysLeft, columnOpen, columnSubCount, columnNutriscore);
 		
 		this.setItems(createList());
 	}
 	
-	private ObservableList<Product> createList(){
-		final var filteredList = controller.getProducts().filtered(p -> !p.isConsumed());
+	protected ObservableList<Product> createList(){
+		final var filteredList = getController().getProducts().filtered(p -> !p.isConsumed());
 		final var sortedList = filteredList.sorted();
 		//TODO
 		return sortedList;
+	}
+	
+	protected MainController getController(){
+		return this.controller;
 	}
 }

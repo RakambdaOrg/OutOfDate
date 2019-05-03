@@ -43,8 +43,7 @@ public class OpenFoodFacts{
 	}
 	
 	private static Product parseJsonProduct(final JSONObject json){
-		
-		return new Product(json.getString("code"), json.getString("product_name"), Optional.ofNullable(json.optString("image_url", null)).map(urlStr -> {
+		final var product = new Product(json.getString("code"), json.getString("product_name"), Optional.ofNullable(json.optString("image_url", null)).map(urlStr -> {
 			try{
 				return new URL(urlStr);
 			}
@@ -53,5 +52,9 @@ public class OpenFoodFacts{
 			}
 			return null;
 		}).orElse(null));
+		if(json.has("nutrition_grade_fr")){
+			product.setNutriscore(json.getString("nutrition_grade_fr").toUpperCase());
+		}
+		return product;
 	}
 }

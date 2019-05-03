@@ -99,6 +99,9 @@ public class MainController{
 		if(json.has("isConsumed")){
 			product.setIsConsumed(json.getBoolean("isConsumed"));
 		}
+		if(json.has("nutriscore")){
+			product.setNutriscore(json.getString("nutriscore"));
+		}
 		return product;
 	}
 	
@@ -121,6 +124,7 @@ public class MainController{
 			obj.put("isOpen", p.isOpen());
 			obj.put("subCount", p.getSubCount());
 			obj.put("isConsumed", p.isConsumed());
+			obj.put("nutriscore", p.getNutriscore());
 			products.put(obj);
 		});
 		final var json = new JSONObject();

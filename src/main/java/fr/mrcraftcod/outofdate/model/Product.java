@@ -25,6 +25,7 @@ public class Product implements Comparable<Product>{
 	private final SimpleLongProperty daysLeft;
 	private final SimpleIntegerProperty subCount;
 	private final SimpleBooleanProperty isConsumed;
+	private String nutriscore;
 	
 	public Product(final String id, final String name, final URL image){
 		this.ID = id;
@@ -36,6 +37,7 @@ public class Product implements Comparable<Product>{
 		this.isOpen = new SimpleBooleanProperty(false);
 		this.subCount = new SimpleIntegerProperty(0);
 		this.isConsumed = new SimpleBooleanProperty(false);
+		this.nutriscore = "";
 	}
 	
 	public SimpleBooleanProperty isConsumedProperty(){
@@ -58,6 +60,14 @@ public class Product implements Comparable<Product>{
 			return Boolean.compare(o.isOpen(), this.isOpen());
 		}
 		return diff;
+	}
+	
+	public void setNutriscore(final String nutriscore){
+		this.nutriscore = nutriscore;
+	}
+	
+	public String getNutriscore(){
+		return nutriscore;
 	}
 	
 	public boolean isConsumed(){

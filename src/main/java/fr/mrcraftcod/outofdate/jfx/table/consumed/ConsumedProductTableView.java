@@ -1,21 +1,12 @@
 package fr.mrcraftcod.outofdate.jfx.table.consumed;
 
-import fr.mrcraftcod.outofdate.jfx.EditProductView;
 import fr.mrcraftcod.outofdate.jfx.MainController;
-import fr.mrcraftcod.outofdate.jfx.table.cells.ImageProductTableCell;
-import fr.mrcraftcod.outofdate.jfx.table.cells.ProductTableCell;
-import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
+import fr.mrcraftcod.outofdate.jfx.table.products.ProductTableView;
 import fr.mrcraftcod.outofdate.model.Product;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.net.URL;
-import java.util.function.Consumer;
 
 /**
  * Created by mrcraftcod (MrCraftCod - zerderr@gmail.com) on 2019-04-20.
@@ -23,46 +14,16 @@ import java.util.function.Consumer;
  * @author Thomas Couchoud
  * @since 2019-04-20
  */
-public class ConsumedProductTableView extends TableView<Product>{
+public class ConsumedProductTableView extends ProductTableView{
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConsumedProductTableView.class);
-	private final MainController controller;
 	
 	public ConsumedProductTableView(final Stage parentStage, final MainController controller){
-		super();
-		this.controller = controller;
-		
-		final Consumer<Product> onProductEdit = product -> new EditProductView(parentStage, product);
-		
-		final var columnID = new TableColumn<Product, String>(LangUtils.getString("product_table_column_id"));
-		columnID.setCellValueFactory(obj -> new SimpleStringProperty(obj.getValue().getID()));
-		columnID.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
-		
-		final var columnName = new TableColumn<Product, String>(LangUtils.getString("product_table_column_name"));
-		columnName.setCellValueFactory(obj -> new SimpleStringProperty(obj.getValue().getName()));
-		columnName.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
-		
-		final var columnPicture = new TableColumn<Product, URL>(LangUtils.getString("product_table_column_picture"));
-		columnPicture.setCellValueFactory(obj -> new SimpleObjectProperty<>(obj.getValue().getImage()));
-		columnPicture.setCellFactory(cb -> new ImageProductTableCell(onProductEdit));
-		
-		final var columnDaysLeft = new TableColumn<Product, Number>(LangUtils.getString("product_table_column_days_left"));
-		columnDaysLeft.setCellValueFactory(obj -> obj.getValue().daysLeftProperty());
-		columnDaysLeft.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
-		
-		final var columnOpen = new TableColumn<Product, Boolean>(LangUtils.getString("product_table_column_open"));
-		columnOpen.setCellValueFactory(obj -> obj.getValue().isOpenProperty());
-		columnOpen.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
-		
-		final var columnSubCount = new TableColumn<Product, Number>(LangUtils.getString("product_table_column_sub_count"));
-		columnSubCount.setCellValueFactory(obj -> obj.getValue().subCountProperty());
-		columnSubCount.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
-		
-		this.getColumns().addAll(columnID, columnName, columnPicture, columnDaysLeft, columnOpen, columnSubCount);
-		this.setItems(createList());
+		super(parentStage, controller);
 	}
 	
-	private ObservableList<Product> createList(){
-		final var list = controller.getProducts().filtered(Product::isConsumed).sorted();
+	@Override
+	protected ObservableList<Product> createList(){
+		final var list = getController().getProducts().filtered(Product::isConsumed).sorted();
 		//TODO
 		return list;
 	}
