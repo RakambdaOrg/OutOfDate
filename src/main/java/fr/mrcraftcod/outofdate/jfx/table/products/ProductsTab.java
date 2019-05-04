@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import java.time.LocalDate;
 
 /**
  * Created by mrcraftcod (MrCraftCod - zerderr@gmail.com) on 2019-04-20.
@@ -59,7 +60,7 @@ public class ProductsTab extends Tab{
 			if(toldIndex > 0){
 				id = id.substring(0, toldIndex);
 			}
-			this.controller.addNewOwnedProduct(id);
+			this.controller.addNewOwnedProduct(id).ifPresent(owned -> owned.setAddedOn(LocalDate.now()));
 		});
 	}
 }

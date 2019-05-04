@@ -116,14 +116,11 @@ public class MainController{
 		return product;
 	}
 	
-	public void addOwnedProduct(final OwnedProduct owned){
-		this.products.add(owned.getProduct());
-		ownedProducts.add(owned);
-	}
-	
 	private OwnedProduct parseOwnedProduct(final JSONObject json){
 		final var owned = new OwnedProduct(this.getProductOrCreate(json.getString("id")).orElseThrow(() -> new IllegalStateException("Couldn't find product with id " + json.getString("id"))));
-		Optional.ofNullable(json.optString("spoilDate", null)).map(s -> LocalDate.parse(s, df)).ifPresent(owned::setSpoilDate);
+		parseJsonLocalDate(json, "spoilDate").ifPresent(owned::setSpoilDate);
+		parseJsonLocalDate(json, "addedDate").ifPresent(owned::setAddedOn);
+		parseJsonLocalDate(json, "consumedDate").ifPresent(owned::setConsumedOn);
 		if(json.has("isOpen")){
 			owned.setIsOpen(json.getBoolean("isOpen"));
 		}
@@ -134,6 +131,14 @@ public class MainController{
 			owned.setIsConsumed(json.getBoolean("isConsumed"));
 		}
 		return owned;
+	}
+	
+	private Optional<LocalDate> parseJsonLocalDate(final JSONObject json, final String key){
+		return Optional.ofNullable(json.optString(key, null)).map(s -> LocalDate.parse(s, df));
+	}
+	
+	public Optional<OwnedProduct> addNewOwnedProduct(final String id){
+		return this.getProductOrCreate(id).map(p -> this.addOwnedProduct(new OwnedProduct(p)));
 	}
 	
 	private Optional<Product> getProductOrCreate(final String id){
@@ -148,8 +153,10 @@ public class MainController{
 		return this.products;
 	}
 	
-	public void addNewOwnedProduct(final String id){
-		this.getProductOrCreate(id).ifPresent(p -> this.addOwnedProduct(new OwnedProduct(p)));
+	public OwnedProduct addOwnedProduct(final OwnedProduct owned){
+		this.products.add(owned.getProduct());
+		this.ownedProducts.add(owned);
+		return owned;
 	}
 	
 	public void saveData(){
@@ -168,9 +175,9 @@ public class MainController{
 		this.getOwnedProducts().forEach(o -> {
 			final var obj = new JSONObject();
 			obj.put("id", o.getProduct().getID());
-			if(Objects.nonNull(o.getSpoilDate())){
-				obj.put("spoilDate", df.format(o.getSpoilDate()));
-			}
+			this.saveJsonDate(obj, "spoilDate", o.getSpoilDate());
+			this.saveJsonDate(obj, "addedDate", o.getAddedOn());
+			this.saveJsonDate(obj, "consumedDate", o.getConsumedOn());
 			obj.put("isOpen", o.isOpen());
 			obj.put("subCount", o.getSubCount());
 			obj.put("isConsumed", o.isConsumed());
@@ -184,6 +191,12 @@ public class MainController{
 		}
 		catch(final FileNotFoundException e){
 			LOGGER.error("Error writing products", e);
+		}
+	}
+	
+	private void saveJsonDate(final JSONObject obj, final String key, final LocalDate date){
+		if(Objects.nonNull(date)){
+			obj.put(key, df.format(date));
 		}
 	}
 	

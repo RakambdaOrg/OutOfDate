@@ -31,39 +31,41 @@ public class ProductTableView extends TableView<OwnedProduct>{
 		this.controller = controller;
 		this.setSortPolicy(cell -> false);
 		
-		final Consumer<OwnedProduct> onProductEdit = product -> new EditProductView(parentStage, product);
-		
 		final var columnID = new TableColumn<OwnedProduct, String>(LangUtils.getString("product_table_column_id"));
 		columnID.setCellValueFactory(obj -> new SimpleStringProperty(obj.getValue().getProduct().getID()));
-		columnID.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
+		columnID.setCellFactory(cb -> new ProductTableCell<>(this.getOnProductEdit(parentStage)));
 		
 		final var columnName = new TableColumn<OwnedProduct, String>(LangUtils.getString("product_table_column_name"));
 		columnName.setCellValueFactory(obj -> obj.getValue().getProduct().nameProperty());
-		columnName.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
+		columnName.setCellFactory(cb -> new ProductTableCell<>(this.getOnProductEdit(parentStage)));
 		
 		final var columnPicture = new TableColumn<OwnedProduct, URL>(LangUtils.getString("product_table_column_picture"));
 		columnPicture.setCellValueFactory(obj -> obj.getValue().getProduct().imageProperty());
-		columnPicture.setCellFactory(cb -> new ImageProductTableCell(onProductEdit));
+		columnPicture.setCellFactory(cb -> new ImageProductTableCell(this.getOnProductEdit(parentStage)));
 		
 		final var columnDaysLeft = new TableColumn<OwnedProduct, Number>(LangUtils.getString("product_table_column_days_left"));
 		columnDaysLeft.setCellValueFactory(obj -> obj.getValue().daysLeftProperty());
-		columnDaysLeft.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
+		columnDaysLeft.setCellFactory(cb -> new ProductTableCell<>(this.getOnProductEdit(parentStage)));
 		
 		final var columnOpen = new TableColumn<OwnedProduct, Boolean>(LangUtils.getString("product_table_column_open"));
 		columnOpen.setCellValueFactory(obj -> obj.getValue().isOpenProperty());
-		columnOpen.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
+		columnOpen.setCellFactory(cb -> new ProductTableCell<>(this.getOnProductEdit(parentStage)));
 		
 		final var columnSubCount = new TableColumn<OwnedProduct, Number>(LangUtils.getString("product_table_column_sub_count"));
 		columnSubCount.setCellValueFactory(obj -> obj.getValue().subCountProperty());
-		columnSubCount.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
+		columnSubCount.setCellFactory(cb -> new ProductTableCell<>(this.getOnProductEdit(parentStage)));
 		
 		final var columnNutriscore = new TableColumn<OwnedProduct, String>(LangUtils.getString("product_table_column_nutriscore"));
 		columnNutriscore.setCellValueFactory(obj -> obj.getValue().getProduct().nutriscoreProperty());
-		columnNutriscore.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
+		columnNutriscore.setCellFactory(cb -> new ProductTableCell<>(this.getOnProductEdit(parentStage)));
 		
 		this.getColumns().addAll(columnID, columnName, columnPicture, columnDaysLeft, columnOpen, columnSubCount, columnNutriscore);
 		
 		this.setItems(createList());
+	}
+	
+	protected Consumer<OwnedProduct> getOnProductEdit(final Stage parentStage){
+		return product -> new EditProductView(parentStage, product);
 	}
 	
 	protected ObservableList<OwnedProduct> createList(){

@@ -21,6 +21,8 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 	private final SimpleLongProperty daysLeft;
 	private final SimpleIntegerProperty subCount;
 	private final SimpleBooleanProperty isConsumed;
+	private final SimpleObjectProperty<LocalDate> addedOn;
+	private final SimpleObjectProperty<LocalDate> consumedOn;
 	
 	public OwnedProduct(final Product product){
 		this.product = product;
@@ -30,6 +32,37 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 		this.isOpen = new SimpleBooleanProperty(false);
 		this.subCount = new SimpleIntegerProperty(0);
 		this.isConsumed = new SimpleBooleanProperty(false);
+		this.isConsumed.addListener((obj, oldV, newV) -> {
+			if(newV && Objects.isNull(this.getConsumedOn())){
+				this.setConsumedOn(LocalDate.now());
+			}
+		});
+		this.addedOn = new SimpleObjectProperty<>();
+		this.consumedOn = new SimpleObjectProperty<>();
+	}
+	
+	public LocalDate getConsumedOn(){
+		return consumedOn.get();
+	}
+	
+	public void setConsumedOn(final LocalDate consumedOn){
+		this.consumedOn.set(consumedOn);
+	}
+	
+	public SimpleObjectProperty<LocalDate> addedOnProperty(){
+		return addedOn;
+	}
+	
+	public SimpleObjectProperty<LocalDate> consumedOnProperty(){
+		return consumedOn;
+	}
+	
+	public LocalDate getAddedOn(){
+		return addedOn.get();
+	}
+	
+	public void setAddedOn(final LocalDate addedOn){
+		this.addedOn.set(addedOn);
 	}
 	
 	public void updateRemainingDays(){
