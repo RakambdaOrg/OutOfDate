@@ -3,7 +3,6 @@ package fr.mrcraftcod.outofdate.jfx.table.products;
 import fr.mrcraftcod.outofdate.jfx.MainController;
 import fr.mrcraftcod.outofdate.jfx.utils.AutoCompleteTextInputDialog;
 import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
-import fr.mrcraftcod.outofdate.utils.OpenFoodFacts;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
@@ -48,7 +47,7 @@ public class ProductsTab extends Tab{
 	}
 	
 	public void addProduct(){
-		final var dialog = new AutoCompleteTextInputDialog(controller.getProductsHints());
+		final var dialog = new AutoCompleteTextInputDialog(this.controller.getProductsHints());
 		dialog.setTitle(LangUtils.getString("products_tab_add_product_dialog_title"));
 		dialog.setHeaderText(LangUtils.getString("products_tab_add_product_dialog_header"));
 		dialog.setContentText(LangUtils.getString("products_tab_add_product_dialog_content"));
@@ -56,11 +55,11 @@ public class ProductsTab extends Tab{
 		final var result = dialog.showAndWait();
 		result.ifPresent(s -> {
 			var id = result.get();
-			final var toldIndex = id.indexOf(controller.getProductHintSeparator());
+			final var toldIndex = id.indexOf(this.controller.getProductHintSeparator());
 			if(toldIndex > 0){
 				id = id.substring(0, toldIndex);
 			}
-			OpenFoodFacts.getProduct(id).ifPresent(controller::addProduct);
+			this.controller.addNewOwnedProduct(id);
 		});
 	}
 }

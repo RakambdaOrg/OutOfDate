@@ -5,8 +5,7 @@ import fr.mrcraftcod.outofdate.jfx.MainController;
 import fr.mrcraftcod.outofdate.jfx.table.cells.ImageProductTableCell;
 import fr.mrcraftcod.outofdate.jfx.table.cells.ProductTableCell;
 import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
-import fr.mrcraftcod.outofdate.model.Product;
-import javafx.beans.property.SimpleObjectProperty;
+import fr.mrcraftcod.outofdate.model.OwnedProduct;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -23,7 +22,7 @@ import java.util.function.Consumer;
  * @author Thomas Couchoud
  * @since 2019-04-20
  */
-public class ProductTableView extends TableView<Product>{
+public class ProductTableView extends TableView<OwnedProduct>{
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProductTableView.class);
 	private final MainController controller;
 	
@@ -32,34 +31,34 @@ public class ProductTableView extends TableView<Product>{
 		this.controller = controller;
 		this.setSortPolicy(cell -> false);
 		
-		final Consumer<Product> onProductEdit = product -> new EditProductView(parentStage, product);
+		final Consumer<OwnedProduct> onProductEdit = product -> new EditProductView(parentStage, product);
 		
-		final var columnID = new TableColumn<Product, String>(LangUtils.getString("product_table_column_id"));
-		columnID.setCellValueFactory(obj -> new SimpleStringProperty(obj.getValue().getID()));
+		final var columnID = new TableColumn<OwnedProduct, String>(LangUtils.getString("product_table_column_id"));
+		columnID.setCellValueFactory(obj -> new SimpleStringProperty(obj.getValue().getProduct().getID()));
 		columnID.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
 		
-		final var columnName = new TableColumn<Product, String>(LangUtils.getString("product_table_column_name"));
-		columnName.setCellValueFactory(obj -> new SimpleStringProperty(obj.getValue().getName()));
+		final var columnName = new TableColumn<OwnedProduct, String>(LangUtils.getString("product_table_column_name"));
+		columnName.setCellValueFactory(obj -> obj.getValue().getProduct().nameProperty());
 		columnName.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
 		
-		final var columnPicture = new TableColumn<Product, URL>(LangUtils.getString("product_table_column_picture"));
-		columnPicture.setCellValueFactory(obj -> new SimpleObjectProperty<>(obj.getValue().getImage()));
+		final var columnPicture = new TableColumn<OwnedProduct, URL>(LangUtils.getString("product_table_column_picture"));
+		columnPicture.setCellValueFactory(obj -> obj.getValue().getProduct().imageProperty());
 		columnPicture.setCellFactory(cb -> new ImageProductTableCell(onProductEdit));
 		
-		final var columnDaysLeft = new TableColumn<Product, Number>(LangUtils.getString("product_table_column_days_left"));
+		final var columnDaysLeft = new TableColumn<OwnedProduct, Number>(LangUtils.getString("product_table_column_days_left"));
 		columnDaysLeft.setCellValueFactory(obj -> obj.getValue().daysLeftProperty());
 		columnDaysLeft.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
 		
-		final var columnOpen = new TableColumn<Product, Boolean>(LangUtils.getString("product_table_column_open"));
+		final var columnOpen = new TableColumn<OwnedProduct, Boolean>(LangUtils.getString("product_table_column_open"));
 		columnOpen.setCellValueFactory(obj -> obj.getValue().isOpenProperty());
 		columnOpen.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
 		
-		final var columnSubCount = new TableColumn<Product, Number>(LangUtils.getString("product_table_column_sub_count"));
+		final var columnSubCount = new TableColumn<OwnedProduct, Number>(LangUtils.getString("product_table_column_sub_count"));
 		columnSubCount.setCellValueFactory(obj -> obj.getValue().subCountProperty());
 		columnSubCount.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
 		
-		final var columnNutriscore = new TableColumn<Product, String>(LangUtils.getString("product_table_column_nutriscore"));
-		columnNutriscore.setCellValueFactory(obj -> new SimpleStringProperty(obj.getValue().getNutriscore()));
+		final var columnNutriscore = new TableColumn<OwnedProduct, String>(LangUtils.getString("product_table_column_nutriscore"));
+		columnNutriscore.setCellValueFactory(obj -> obj.getValue().getProduct().nutriscoreProperty());
 		columnNutriscore.setCellFactory(cb -> new ProductTableCell<>(onProductEdit));
 		
 		this.getColumns().addAll(columnID, columnName, columnPicture, columnDaysLeft, columnOpen, columnSubCount, columnNutriscore);
@@ -67,8 +66,8 @@ public class ProductTableView extends TableView<Product>{
 		this.setItems(createList());
 	}
 	
-	protected ObservableList<Product> createList(){
-		final var filteredList = getController().getProducts().filtered(p -> !p.isConsumed());
+	protected ObservableList<OwnedProduct> createList(){
+		final var filteredList = getController().getOwnedProducts().filtered(p -> !p.isConsumed());
 		final var sortedList = filteredList.sorted();
 		//TODO
 		return sortedList;

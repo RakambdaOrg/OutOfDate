@@ -2,7 +2,7 @@ package fr.mrcraftcod.outofdate.jfx.table.consumed;
 
 import fr.mrcraftcod.outofdate.jfx.MainController;
 import fr.mrcraftcod.outofdate.jfx.table.products.ProductTableView;
-import fr.mrcraftcod.outofdate.model.Product;
+import fr.mrcraftcod.outofdate.model.OwnedProduct;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -22,8 +22,8 @@ public class ConsumedProductTableView extends ProductTableView{
 	}
 	
 	@Override
-	protected ObservableList<Product> createList(){
-		final var list = getController().getProducts().filtered(Product::isConsumed).sorted();
+	protected ObservableList<OwnedProduct> createList(){
+		final var list = getController().getOwnedProducts().filtered(OwnedProduct::isConsumed).sorted();
 		//TODO
 		return list;
 	}

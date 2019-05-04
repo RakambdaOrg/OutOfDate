@@ -1,6 +1,8 @@
 package fr.mrcraftcod.outofdate.jfx;
 
+import fr.mrcraftcod.outofdate.model.OwnedProduct;
 import fr.mrcraftcod.outofdate.model.Product;
+import fr.mrcraftcod.outofdate.utils.OpenFoodFacts;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,9 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -33,19 +33,25 @@ import java.util.stream.Collectors;
 public class MainController{
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 	private static final DateTimeFormatter df = DateTimeFormatter.ISO_DATE;
-	private final ObservableList<Product> productsList;
+	private final HashSet<Product> products;
+	private final ObservableList<OwnedProduct> ownedProducts;
 	private final static String productHintSeparator = "~";
 	
 	public MainController(){
-		this.productsList = FXCollections.observableArrayList(p -> new Observable[]{
-				p.spoilDateProperty(),
+		this.products = new HashSet<>();
+		this.ownedProducts = FXCollections.observableArrayList(p -> new Observable[]{
 				p.isOpenProperty(),
-				p.isConsumedProperty()
+				p.spoilDateProperty(),
+				p.subCountProperty(),
+				p.isConsumedProperty(),
+				p.getProduct().nameProperty(),
+				p.getProduct().imageProperty(),
+				p.getProduct().nutriscoreProperty()
 		});
-		this.loadPreviousProducts(getProductsJsonPath());
+		this.loadData(getProductsJsonPath());
 	}
 	
-	private void loadPreviousProducts(final Path path){
+	private void loadData(final Path path){
 		if(path.toFile().exists()){
 			try{
 				final var json = new JSONObject(String.join("\n", Files.readAllLines(path)));
@@ -53,10 +59,21 @@ public class MainController{
 					final var products = json.getJSONArray("products");
 					for(var i = 0; i < products.length(); i++){
 						try{
-							this.productsList.add(parseProduct(products.getJSONObject(i)));
+							this.addProduct(parseProduct(products.getJSONObject(i)));
 						}
 						catch(final Exception e){
 							LOGGER.error("Failed to parse json product", e);
+						}
+					}
+				}
+				if(json.has("owned")){
+					final var owned = json.getJSONArray("owned");
+					for(var i = 0; i < owned.length(); i++){
+						try{
+							this.addOwnedProduct(parseOwnedProduct(owned.getJSONObject(i)));
+						}
+						catch(final Exception e){
+							LOGGER.error("Failed to parse json owned product", e);
 						}
 					}
 				}
@@ -65,6 +82,10 @@ public class MainController{
 				LOGGER.error("Failed to read json file {}", path, e);
 			}
 		}
+	}
+	
+	public void addProduct(final Product product){
+		this.products.add(product);
 	}
 	
 	public List<String> getProductsHints(){
@@ -89,27 +110,49 @@ public class MainController{
 			}
 			return null;
 		}).orElse(null));
-		Optional.ofNullable(json.optString("spoilDate", null)).map(s -> LocalDate.parse(s, df)).ifPresent(product::setSpoilDate);
-		if(json.has("isOpen")){
-			product.setIsOpen(json.getBoolean("isOpen"));
-		}
-		if(json.has("subCount")){
-			product.setSubCount(json.getInt("subCount"));
-		}
-		if(json.has("isConsumed")){
-			product.setIsConsumed(json.getBoolean("isConsumed"));
-		}
 		if(json.has("nutriscore")){
 			product.setNutriscore(json.getString("nutriscore"));
 		}
 		return product;
 	}
 	
-	public void addProduct(final Product product){
-		productsList.add(product);
+	public void addOwnedProduct(final OwnedProduct owned){
+		this.products.add(owned.getProduct());
+		ownedProducts.add(owned);
 	}
 	
-	public void saveProducts(){
+	private OwnedProduct parseOwnedProduct(final JSONObject json){
+		final var owned = new OwnedProduct(this.getProductOrCreate(json.getString("id")).orElseThrow(() -> new IllegalStateException("Couldn't find product with id " + json.getString("id"))));
+		Optional.ofNullable(json.optString("spoilDate", null)).map(s -> LocalDate.parse(s, df)).ifPresent(owned::setSpoilDate);
+		if(json.has("isOpen")){
+			owned.setIsOpen(json.getBoolean("isOpen"));
+		}
+		if(json.has("subCount")){
+			owned.setSubCount(json.getInt("subCount"));
+		}
+		if(json.has("isConsumed")){
+			owned.setIsConsumed(json.getBoolean("isConsumed"));
+		}
+		return owned;
+	}
+	
+	private Optional<Product> getProductOrCreate(final String id){
+		return this.getProduct(id).or(() -> OpenFoodFacts.getProduct(id));
+	}
+	
+	private Optional<Product> getProduct(final String id){
+		return this.getProducts().stream().filter(p -> Objects.equals(p.getID(), id)).findFirst();
+	}
+	
+	public Set<Product> getProducts(){
+		return this.products;
+	}
+	
+	public void addNewOwnedProduct(final String id){
+		this.getProductOrCreate(id).ifPresent(p -> this.addOwnedProduct(new OwnedProduct(p)));
+	}
+	
+	public void saveData(){
 		final var products = new JSONArray();
 		this.getProducts().forEach(p -> {
 			final var obj = new JSONObject();
@@ -118,17 +161,24 @@ public class MainController{
 			if(Objects.nonNull(p.getImage())){
 				obj.put("image", p.getImage().toString());
 			}
-			if(Objects.nonNull(p.getSpoilDate())){
-				obj.put("spoilDate", df.format(p.getSpoilDate()));
-			}
-			obj.put("isOpen", p.isOpen());
-			obj.put("subCount", p.getSubCount());
-			obj.put("isConsumed", p.isConsumed());
 			obj.put("nutriscore", p.getNutriscore());
 			products.put(obj);
 		});
+		final var owned = new JSONArray();
+		this.getOwnedProducts().forEach(o -> {
+			final var obj = new JSONObject();
+			obj.put("id", o.getProduct().getID());
+			if(Objects.nonNull(o.getSpoilDate())){
+				obj.put("spoilDate", df.format(o.getSpoilDate()));
+			}
+			obj.put("isOpen", o.isOpen());
+			obj.put("subCount", o.getSubCount());
+			obj.put("isConsumed", o.isConsumed());
+			owned.put(obj);
+		});
 		final var json = new JSONObject();
 		json.put("products", products);
+		json.put("owned", owned);
 		try(final var pw = new PrintWriter(new FileOutputStream(getProductsJsonPath().toFile()))){
 			json.write(pw, 4, 0);
 		}
@@ -137,7 +187,15 @@ public class MainController{
 		}
 	}
 	
-	public ObservableList<Product> getProducts(){
-		return this.productsList;
+	public ObservableList<OwnedProduct> getOwnedProducts(){
+		return this.ownedProducts;
+	}
+	
+	public void refreshProductInfos(){
+		this.getProducts().forEach(p -> OpenFoodFacts.getProduct(p.getID()).ifPresent(newProduct -> {
+			p.setName(newProduct.getName());
+			p.setImage(newProduct.getImage());
+			p.setNutriscore(newProduct.getNutriscore());
+		}));
 	}
 }

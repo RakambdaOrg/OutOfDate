@@ -46,9 +46,30 @@ public class MainApplication extends ApplicationBase{
 		return "OutOfFood";
 	}
 	
-	@Override
-	public Consumer<Stage> getStageHandler(){
-		return stage -> stage.setOnCloseRequest(cl -> this.controller.saveProducts());
+	private MenuBar constructMenuBar(){
+		final var menuBar = new MenuBar();
+		final var os = System.getProperty("os.name");
+		if(os != null && os.startsWith("Mac")){
+			menuBar.useSystemMenuBarProperty().set(true);
+		}
+		
+		final var menuProductAdd = new MenuItem(LangUtils.getString("menu_bar_product_add"));
+		menuProductAdd.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
+		menuProductAdd.setOnAction(evt -> {
+			if(Objects.nonNull(this.productsTab)){
+				new Thread(() -> this.productsTab.addProduct()).start();
+			}
+		});
+		
+		final var menuProductRefresh = new MenuItem(LangUtils.getString("menu_bar_product_refresh"));
+		menuProductRefresh.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
+		menuProductRefresh.setOnAction(evt -> this.controller.refreshProductInfos());
+		
+		final var menuProduct = new Menu(LangUtils.getString("menu_bar_product"));
+		menuProduct.getItems().addAll(menuProductAdd, menuProductRefresh);
+		
+		menuBar.getMenus().addAll(menuProduct);
+		return menuBar;
 	}
 	
 	@Override
@@ -71,25 +92,8 @@ public class MainApplication extends ApplicationBase{
 		return borderPane;
 	}
 	
-	private MenuBar constructMenuBar(){
-		final var menuBar = new MenuBar();
-		final var os = System.getProperty("os.name");
-		if(os != null && os.startsWith("Mac")){
-			menuBar.useSystemMenuBarProperty().set(true);
-		}
-		
-		final var menuProductAdd = new MenuItem(LangUtils.getString("menu_bar_product_add"));
-		menuProductAdd.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
-		menuProductAdd.setOnAction(evt -> {
-			if(Objects.nonNull(this.productsTab)){
-				this.productsTab.addProduct();
-			}
-		});
-		
-		final var menuProduct = new Menu(LangUtils.getString("menu_bar_product"));
-		menuProduct.getItems().addAll(menuProductAdd);
-		
-		menuBar.getMenus().addAll(menuProduct);
-		return menuBar;
+	@Override
+	public Consumer<Stage> getStageHandler(){
+		return stage -> stage.setOnCloseRequest(cl -> this.controller.saveData());
 	}
 }

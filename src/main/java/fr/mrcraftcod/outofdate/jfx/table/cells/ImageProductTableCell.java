@@ -1,8 +1,7 @@
 package fr.mrcraftcod.outofdate.jfx.table.cells;
 
 import fr.mrcraftcod.outofdate.jfx.utils.ImageCache;
-import fr.mrcraftcod.outofdate.model.Product;
-import javafx.scene.image.Image;
+import fr.mrcraftcod.outofdate.model.OwnedProduct;
 import javafx.scene.image.ImageView;
 import java.net.URL;
 import java.util.Objects;
@@ -17,9 +16,8 @@ import java.util.function.Consumer;
 public class ImageProductTableCell extends ProductTableCell<URL>{
 	private final ImageView imageView;
 	private URL lastUrl;
-	private Image image;
 	
-	public ImageProductTableCell(final Consumer<Product> onProductEdit){
+	public ImageProductTableCell(final Consumer<OwnedProduct> onProductEdit){
 		super(onProductEdit);
 		this.imageView = new ImageView();
 		this.imageView.setFitHeight(50);
@@ -40,8 +38,7 @@ public class ImageProductTableCell extends ProductTableCell<URL>{
 			this.setGraphic(this.imageView);
 			if(!Objects.equals(this.lastUrl, item)){
 				this.lastUrl = item;
-				this.image = ImageCache.fetchImage(item);
-				this.imageView.setImage(image);
+				this.imageView.setImage(ImageCache.fetchImage(item));
 			}
 		}
 	}

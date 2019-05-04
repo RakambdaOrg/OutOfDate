@@ -2,7 +2,7 @@ package fr.mrcraftcod.outofdate.jfx;
 
 import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
 import fr.mrcraftcod.outofdate.jfx.utils.NumberTextField;
-import fr.mrcraftcod.outofdate.model.Product;
+import fr.mrcraftcod.outofdate.model.OwnedProduct;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
@@ -21,12 +21,10 @@ import javafx.stage.Stage;
  * @since 2019-04-20
  */
 public class EditProductView{
-	private final Stage dialog;
 	
-	public EditProductView(final Stage parentStage, final Product product){
-		dialog = new Stage();
-		
-		final var scene = buildScene(dialog, product);
+	public EditProductView(final Stage parentStage, final OwnedProduct owned){
+		final var dialog = new Stage();
+		final var scene = buildScene(dialog, owned);
 		dialog.setTitle(LangUtils.getString("edit_product_title"));
 		dialog.setScene(scene);
 		dialog.sizeToScene();
@@ -36,31 +34,31 @@ public class EditProductView{
 		dialog.showAndWait();
 	}
 	
-	private Scene buildScene(final Stage stage, final Product product){
-		return new Scene(buildContent(stage, product));
+	private Scene buildScene(final Stage stage, final OwnedProduct owned){
+		return new Scene(buildContent(stage, owned));
 	}
 	
-	private Parent buildContent(final Stage stage, final Product product){
+	private Parent buildContent(final Stage stage, final OwnedProduct owned){
 		final var root = new VBox(3);
 		
 		final var datePicker = new DatePicker();
 		datePicker.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		datePicker.setOnAction(event -> product.setSpoilDate(datePicker.getValue()));
-		datePicker.valueProperty().bindBidirectional(product.spoilDateProperty());
+		datePicker.setOnAction(event -> owned.setSpoilDate(datePicker.getValue()));
+		datePicker.valueProperty().bindBidirectional(owned.spoilDateProperty());
 		
 		final var isOpenCheck = new CheckBox(LangUtils.getString("edit_product_open_label"));
-		isOpenCheck.selectedProperty().bindBidirectional(product.isOpenProperty());
+		isOpenCheck.selectedProperty().bindBidirectional(owned.isOpenProperty());
 		
 		final var subCountLabel = new Text(LangUtils.getString("edit_product_sub_count_label"));
-		final var subCountField = new NumberTextField(product.getSubCount());
-		subCountField.numberProperty().bindBidirectional(product.subCountProperty());
+		final var subCountField = new NumberTextField(owned.getSubCount());
+		subCountField.numberProperty().bindBidirectional(owned.subCountProperty());
 		
 		final var subCountBox = new HBox();
 		subCountBox.getChildren().addAll(subCountLabel, subCountField);
 		HBox.setHgrow(subCountField, Priority.ALWAYS);
 		
 		final var isConsumedCheck = new CheckBox(LangUtils.getString("edit_product_consumed_label"));
-		isConsumedCheck.selectedProperty().bindBidirectional(product.isConsumedProperty());
+		isConsumedCheck.selectedProperty().bindBidirectional(owned.isConsumedProperty());
 		
 		root.getChildren().addAll(datePicker, isOpenCheck, subCountBox, isConsumedCheck);
 		return root;
