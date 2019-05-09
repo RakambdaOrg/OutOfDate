@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>OutOfDate</name>
     <groupId>fr.mrcraftcod</groupId>
     <artifactId>outofdate</artifactId>
     <version>0.0.2</version>
@@ -14,13 +15,18 @@
         <main.class>fr.mrcraftcod.outofdate.Main</main.class>
         <final.name>OutOfDate</final.name>
         <mrcraftcod.utils.version>12.0.4</mrcraftcod.utils.version>
-        <log4j.version>2.11.2</log4j.version>
         <slf4j.version>1.8.0-beta4</slf4j.version>
         <javafx.version>12</javafx.version>
     </properties>
     <packaging>jar</packaging>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
@@ -149,20 +155,11 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j18-impl</artifactId>
-            <version>${log4j.version}</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.3.0-alpha4</version>
         </dependency>
         <dependency>
             <groupId>fr.mrcraftcod</groupId>
