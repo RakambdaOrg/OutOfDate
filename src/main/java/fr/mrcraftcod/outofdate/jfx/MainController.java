@@ -1,15 +1,16 @@
 package fr.mrcraftcod.outofdate.jfx;
 
 import fr.mrcraftcod.outofdate.model.OwnedProduct;
-import fr.mrcraftcod.outofdate.model.Product;
 import fr.mrcraftcod.outofdate.utils.HBDatabase;
 import fr.mrcraftcod.outofdate.utils.OpenFoodFacts;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import lombok.extern.slf4j.Slf4j;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -18,18 +19,14 @@ import java.util.stream.Collectors;
  * @author Thomas Couchoud
  * @since 2019-04-20
  */
-@Slf4j
 public class MainController implements AutoCloseable{
 	private static final DateTimeFormatter df = DateTimeFormatter.ISO_DATE;
-	private final HashSet<Product> products;
 	private final ObservableList<OwnedProduct> ownedProducts;
 	private final static String productHintSeparator = "~";
 	private final HBDatabase db;
 	
 	public MainController(){
-		this.products = new HashSet<>();
 		this.db = new HBDatabase();
-		
 		this.ownedProducts = FXCollections.observableArrayList(p -> new Observable[]{
 				p.isOpenProperty(),
 				p.spoilDateProperty(),
@@ -39,12 +36,13 @@ public class MainController implements AutoCloseable{
 				p.getProduct().imageProperty(),
 				p.getProduct().nutriscoreProperty()
 		});
-		
+		this.ownedProducts.addListener(new ListChangeListener<OwnedProduct>(){
+			@Override
+			public void onChanged(Change<? extends OwnedProduct> change){
+				change.getList().forEach(db::updateOwnedProduct);
+			}
+		});
 		this.ownedProducts.addAll(db.getOwnedProducts());
-	}
-	
-	public void addProduct(final Product product){
-		this.products.add(product);
 	}
 	
 	@Override
@@ -52,8 +50,13 @@ public class MainController implements AutoCloseable{
 		this.db.close();
 	}
 	
+	public void removeOwnedProduct(OwnedProduct ownedProduct){
+		if(this.db.removeOwnedProduct(ownedProduct))
+			this.ownedProducts.remove(ownedProduct);
+	}
+	
 	public List<String> getProductsHints(){
-		return this.getProducts().stream().map(p -> String.format("%s%s%s", p.getId(), this.getProductHintSeparator(), p.getName())).distinct().collect(Collectors.toList());
+		return this.db.getProducts().stream().map(p -> String.format("%s%s%s", p.getId(), this.getProductHintSeparator(), p.getName())).distinct().collect(Collectors.toList());
 	}
 	
 	public String getProductHintSeparator(){
@@ -61,25 +64,18 @@ public class MainController implements AutoCloseable{
 	}
 	
 	public Optional<OwnedProduct> addNewOwnedProduct(final String id){
-		return this.getProductOrCreate(id).map(p -> this.addOwnedProduct(new OwnedProduct(p)));
-	}
-	
-	private Optional<Product> getProductOrCreate(final String id){
-		return this.getProduct(id).or(() -> OpenFoodFacts.getProduct(id));
-	}
-	
-	private Optional<Product> getProduct(final String id){
-		return this.getProducts().stream().filter(p -> Objects.equals(p.getId(), id)).findFirst();
-	}
-	
-	public Set<Product> getProducts(){
-		return this.products;
-	}
-	
-	public OwnedProduct addOwnedProduct(final OwnedProduct owned){
-		this.products.add(owned.getProduct());
-		this.ownedProducts.add(owned);
-		return owned;
+		return this.db.getProduct(id).or(() -> {
+			final var product = OpenFoodFacts.getProduct(id);
+			product.ifPresent(this.db::persistProduct);
+			return product;
+		}).map(product -> {
+			final var ownedProduct = new OwnedProduct(product);
+			if(this.db.persistOwnedProduct(ownedProduct)){
+				this.ownedProducts.add(ownedProduct);
+				return ownedProduct;
+			}
+			return null;
+		});
 	}
 	
 	public ObservableList<OwnedProduct> getOwnedProducts(){
@@ -87,10 +83,16 @@ public class MainController implements AutoCloseable{
 	}
 	
 	public void refreshProductInfos(){
-		this.getProducts().forEach(p -> OpenFoodFacts.getProduct(p.getId()).ifPresent(newProduct -> {
-			p.setName(newProduct.getName());
-			p.setImage(newProduct.getImage());
-			p.setNutriscore(newProduct.getNutriscore());
-		}));
+		this.db.getProducts().stream().map(p -> {
+			final var productOptional = OpenFoodFacts.getProduct(p.getId());
+			if(productOptional.isPresent()){
+				final var newProduct = productOptional.get();
+				p.setName(newProduct.getName());
+				p.setImage(newProduct.getImage());
+				p.setNutriscore(newProduct.getNutriscore());
+				return p;
+			}
+			return null;
+		}).filter(Objects::nonNull).forEach(this.db::updateProduct);
 	}
 }

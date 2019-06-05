@@ -10,7 +10,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import lombok.Getter;
 import java.time.LocalDate;
 
 /**
@@ -20,8 +19,11 @@ import java.time.LocalDate;
  * @since 2019-04-20
  */
 public class ProductsTab extends Tab{
-	@Getter
 	private final MainController controller;
+	
+	public MainController getController(){
+		return controller;
+	}
 	
 	public ProductsTab(final Stage parentStage, final MainController controller){
 		super(LangUtils.getString("products_tab_name"));

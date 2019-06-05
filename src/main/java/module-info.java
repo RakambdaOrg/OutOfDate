@@ -6,7 +6,6 @@
 open module fr.mrcraftcod.outofdate {
 	requires org.json;
 	requires org.apache.commons.lang3;
-	requires static lombok;
 	
 	requires org.slf4j;
 	requires ch.qos.logback.classic;

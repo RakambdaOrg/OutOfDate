@@ -2,7 +2,6 @@ package fr.mrcraftcod.outofdate.model;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import javax.persistence.*;
 import java.net.URL;
 
@@ -37,11 +36,6 @@ public class Product{
 		this.name = new SimpleStringProperty(name);
 		this.image = new SimpleObjectProperty<>(image);
 		this.nutriscore = new SimpleStringProperty();
-	}
-	
-	@Override
-	public String toString(){
-		return new ToStringBuilder(this).append("ID", this.getId()).append("name", this.getName()).append("image", this.getImage()).toString();
 	}
 	
 	@Id
@@ -98,5 +92,10 @@ public class Product{
 	
 	public void setId(String id){
 		this.id.set(id);
+	}
+	
+	@Override
+	public String toString(){
+		return "Product{" + "id=" + id + ", name=" + name + '}';
 	}
 }

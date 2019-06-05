@@ -1,14 +1,15 @@
 package fr.mrcraftcod.outofdate.jpa;
 
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.MetadataBuilder;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.spi.MetadataBuilderInitializer;
 import org.hibernate.engine.jdbc.dialect.internal.DialectResolverSet;
 import org.hibernate.engine.jdbc.dialect.spi.DialectResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 public class SQLiteMetadataBuilderInitializer implements MetadataBuilderInitializer{
+	private static final Logger log = LoggerFactory.getLogger(SQLiteMetadataBuilderInitializer.class);
 	@Override
 	public void contribute(MetadataBuilder metadataBuilder, StandardServiceRegistry serviceRegistry){
 		DialectResolver dialectResolver = serviceRegistry.getService(DialectResolver.class);

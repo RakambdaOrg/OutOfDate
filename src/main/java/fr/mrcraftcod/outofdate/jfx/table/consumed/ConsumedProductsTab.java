@@ -5,7 +5,6 @@ import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.stage.Stage;
-import lombok.Getter;
 
 /**
  * Created by mrcraftcod (MrCraftCod - zerderr@gmail.com) on 2019-04-20.
@@ -14,8 +13,11 @@ import lombok.Getter;
  * @since 2019-04-20
  */
 public class ConsumedProductsTab extends Tab{
-	@Getter
 	private final MainController controller;
+	
+	public MainController getController(){
+		return controller;
+	}
 	
 	public ConsumedProductsTab(final Stage parentStage, final MainController controller){
 		super(LangUtils.getString("consumed_products_tab_name"));

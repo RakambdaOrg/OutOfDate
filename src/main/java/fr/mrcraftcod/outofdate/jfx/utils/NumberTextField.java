@@ -2,7 +2,8 @@ package fr.mrcraftcod.outofdate.jfx.utils;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.TextField;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by mrcraftcod (MrCraftCod - zerderr@gmail.com) on 2019-04-21.
@@ -10,8 +11,8 @@ import lombok.extern.slf4j.Slf4j;
  * @author Thomas Couchoud
  * @since 2019-04-21
  */
-@Slf4j
 public class NumberTextField extends TextField{
+	private static final Logger log = LoggerFactory.getLogger(NumberTextField.class);
 	private final SimpleIntegerProperty number = new SimpleIntegerProperty(1);
 	
 	public NumberTextField(final int defaultValue){

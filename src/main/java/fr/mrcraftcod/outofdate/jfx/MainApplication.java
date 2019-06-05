@@ -15,7 +15,8 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -25,8 +26,8 @@ import java.util.function.Consumer;
  * @author Thomas Couchoud
  * @since 2019-04-20
  */
-@Slf4j
 public class MainApplication extends ApplicationBase{
+	private static final Logger log = LoggerFactory.getLogger(MainApplication.class);
 	private MainController controller;
 	private TabPane tabPane;
 	private ProductsTab productsTab;

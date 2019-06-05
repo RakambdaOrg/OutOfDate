@@ -177,7 +177,7 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 	}
 	
 	@Access(AccessType.PROPERTY)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.REFRESH, targetEntity = Product.class, fetch = FetchType.EAGER)
 	@JoinColumn(name = "productId")
 	public Product getProduct(){
 		return productProperty().get();
@@ -221,5 +221,10 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 	
 	public void setIsOpen(final boolean isOpen){
 		this.isOpenProperty().set(isOpen);
+	}
+	
+	@Override
+	public String toString(){
+		return "OwnedProduct{" + "product=" + product + ", id=" + id + '}';
 	}
 }

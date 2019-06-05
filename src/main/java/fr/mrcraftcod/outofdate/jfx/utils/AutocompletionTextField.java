@@ -10,7 +10,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import lombok.Getter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,9 +17,12 @@ import java.util.stream.Collectors;
  * From https://stackoverflow.com/questions/31556373/javafx-dialog-with-2-input-fields
  */
 public class AutocompletionTextField extends TextField{
-	@Getter
 	private final SortedSet<String> entries;
 	private final ContextMenu entriesPopup;
+	
+	public SortedSet<String> getEntries(){
+		return entries;
+	}
 	
 	public AutocompletionTextField(final Collection<String> suggestions){
 		this();

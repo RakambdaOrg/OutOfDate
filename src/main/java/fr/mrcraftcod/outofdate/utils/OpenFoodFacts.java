@@ -2,8 +2,9 @@ package fr.mrcraftcod.outofdate.utils;
 
 import fr.mrcraftcod.outofdate.model.Product;
 import fr.mrcraftcod.utils.http.requestssenders.get.JSONGetRequestSender;
-import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -15,8 +16,8 @@ import java.util.Optional;
  * @author Thomas Couchoud
  * @since 2019-04-20
  */
-@Slf4j
 public class OpenFoodFacts{
+	private static final Logger log = LoggerFactory.getLogger(OpenFoodFacts.class);
 	public static Optional<Product> getProduct(final String productID){
 		log.info("Getting information on product {}", productID);
 		try{
