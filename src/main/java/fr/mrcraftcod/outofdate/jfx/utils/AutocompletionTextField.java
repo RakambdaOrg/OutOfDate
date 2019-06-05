@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import lombok.Getter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
  * From https://stackoverflow.com/questions/31556373/javafx-dialog-with-2-input-fields
  */
 public class AutocompletionTextField extends TextField{
+	@Getter
 	private final SortedSet<String> entries;
 	private final ContextMenu entriesPopup;
 	
@@ -32,8 +34,6 @@ public class AutocompletionTextField extends TextField{
 		setListener();
 	}
 	
-	public SortedSet<String> getEntries(){ return entries; }
-	
 	private void setListener(){
 		textProperty().addListener((observable, oldValue, newValue) -> {
 			final var enteredText = getText();
@@ -44,7 +44,7 @@ public class AutocompletionTextField extends TextField{
 				final var filteredEntries = entries.stream().filter(e -> e.toLowerCase().contains(enteredText.toLowerCase())).collect(Collectors.toList());
 				if(!filteredEntries.isEmpty()){
 					populatePopup(filteredEntries, enteredText);
-					if(!entriesPopup.isShowing()){ //optional
+					if(!entriesPopup.isShowing()){
 						entriesPopup.show(AutocompletionTextField.this, Side.BOTTOM, 0, 0);
 					}
 				}
@@ -57,14 +57,14 @@ public class AutocompletionTextField extends TextField{
 		focusedProperty().addListener((observableValue, oldValue, newValue) -> entriesPopup.hide());
 	}
 	
-	private void populatePopup(final List<String> searchResult, final String searchReauest){
+	private void populatePopup(final List<String> searchResult, final String searchResultStr){
 		final List<CustomMenuItem> menuItems = new LinkedList<>();
 		final var maxEntries = 10;
 		final var count = Math.min(searchResult.size(), maxEntries);
 		for(var i = 0; i < count; i++){
 			final var result = searchResult.get(i);
 			final var entryLabel = new Label();
-			entryLabel.setGraphic(buildTextFlow(result, searchReauest));
+			entryLabel.setGraphic(buildTextFlow(result, searchResultStr));
 			entryLabel.setPrefHeight(10);  //don't sure why it's changed with "graphic"
 			final var item = new CustomMenuItem(entryLabel, true);
 			menuItems.add(item);

@@ -11,8 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Getter;
 import java.net.URL;
 import java.util.function.Consumer;
 
@@ -23,7 +22,7 @@ import java.util.function.Consumer;
  * @since 2019-04-20
  */
 public class ProductTableView extends TableView<OwnedProduct>{
-	private static final Logger LOGGER = LoggerFactory.getLogger(ProductTableView.class);
+	@Getter
 	private final MainController controller;
 	
 	public ProductTableView(final Stage parentStage, final MainController controller){
@@ -32,7 +31,7 @@ public class ProductTableView extends TableView<OwnedProduct>{
 		this.setSortPolicy(cell -> false);
 		
 		final var columnID = new TableColumn<OwnedProduct, String>(LangUtils.getString("product_table_column_id"));
-		columnID.setCellValueFactory(obj -> new SimpleStringProperty(obj.getValue().getProduct().getID()));
+		columnID.setCellValueFactory(obj -> new SimpleStringProperty(obj.getValue().getProduct().getId()));
 		columnID.setCellFactory(cb -> new ProductTableCell<>(this.getOnProductEdit(parentStage)));
 		
 		final var columnName = new TableColumn<OwnedProduct, String>(LangUtils.getString("product_table_column_name"));
@@ -69,13 +68,9 @@ public class ProductTableView extends TableView<OwnedProduct>{
 	}
 	
 	protected ObservableList<OwnedProduct> createList(){
-		final var filteredList = getController().getOwnedProducts().filtered(p -> !p.isConsumed());
+		final var filteredList = getController().getOwnedProducts().filtered(p -> !p.getIsConsumed());
 		final var sortedList = filteredList.sorted();
 		//TODO
 		return sortedList;
-	}
-	
-	protected MainController getController(){
-		return this.controller;
 	}
 }

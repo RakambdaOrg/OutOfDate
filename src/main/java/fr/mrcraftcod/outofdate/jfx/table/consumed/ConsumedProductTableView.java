@@ -8,8 +8,6 @@ import fr.mrcraftcod.outofdate.model.OwnedProduct;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 
 /**
@@ -19,8 +17,6 @@ import java.time.LocalDate;
  * @since 2019-04-20
  */
 public class ConsumedProductTableView extends ProductTableView{
-	private static final Logger LOGGER = LoggerFactory.getLogger(ConsumedProductTableView.class);
-	
 	public ConsumedProductTableView(final Stage parentStage, final MainController controller){
 		super(parentStage, controller);
 		
@@ -33,7 +29,7 @@ public class ConsumedProductTableView extends ProductTableView{
 	
 	@Override
 	protected ObservableList<OwnedProduct> createList(){
-		final var list = getController().getOwnedProducts().filtered(OwnedProduct::isConsumed).sorted();
+		final var list = getController().getOwnedProducts().filtered(OwnedProduct::getIsConsumed).sorted();
 		//TODO
 		return list;
 	}

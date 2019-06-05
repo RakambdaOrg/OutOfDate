@@ -10,7 +10,6 @@ import java.util.ResourceBundle;
  * @since 2019-04-20
  */
 public class LangUtils{
-	
 	private static ResourceBundle bundle;
 	
 	public static String getString(final String key){

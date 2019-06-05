@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
@@ -14,18 +15,32 @@ import java.util.Objects;
  * @author Thomas Couchoud
  * @since 2019-04-20
  */
+@Entity
+@Table(name = "OwnedProducts")
+@Access(AccessType.FIELD)
 public class OwnedProduct implements Comparable<OwnedProduct>{
-	private final Product product;
+	@Transient
+	private final SimpleObjectProperty<Product> product;
+	@Transient
+	private final SimpleIntegerProperty id;
+	@Transient
 	private final SimpleBooleanProperty isOpen;
+	@Transient
 	private final SimpleObjectProperty<LocalDate> spoilDate;
+	@Transient
 	private final SimpleLongProperty daysLeft;
+	@Transient
 	private final SimpleIntegerProperty subCount;
+	@Transient
 	private final SimpleBooleanProperty isConsumed;
+	@Transient
 	private final SimpleObjectProperty<LocalDate> addedOn;
+	@Transient
 	private final SimpleObjectProperty<LocalDate> consumedOn;
 	
-	public OwnedProduct(final Product product){
-		this.product = product;
+	public OwnedProduct(){
+		this.product = new SimpleObjectProperty<>();
+		this.id = new SimpleIntegerProperty();
 		this.spoilDate = new SimpleObjectProperty<>(null);
 		this.spoilDate.addListener(evt -> this.updateRemainingDays());
 		this.daysLeft = new SimpleLongProperty(-1);
@@ -41,6 +56,41 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 		this.consumedOn = new SimpleObjectProperty<>();
 	}
 	
+	public OwnedProduct(final Product product){
+		this.product = new SimpleObjectProperty<>(product);
+		this.id = new SimpleIntegerProperty();
+		this.spoilDate = new SimpleObjectProperty<>(null);
+		this.spoilDate.addListener(evt -> this.updateRemainingDays());
+		this.daysLeft = new SimpleLongProperty(-1);
+		this.isOpen = new SimpleBooleanProperty(false);
+		this.subCount = new SimpleIntegerProperty(0);
+		this.isConsumed = new SimpleBooleanProperty(false);
+		this.isConsumed.addListener((obj, oldV, newV) -> {
+			if(newV && Objects.isNull(this.getConsumedOn())){
+				this.setConsumedOn(LocalDate.now());
+			}
+		});
+		this.addedOn = new SimpleObjectProperty<>();
+		this.consumedOn = new SimpleObjectProperty<>();
+	}
+	
+	@Id
+	@Access(AccessType.PROPERTY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public int getId(){
+		return id.get();
+	}
+	
+	public SimpleIntegerProperty idProperty(){
+		return id;
+	}
+	
+	public void setId(int id){
+		this.id.set(id);
+	}
+	
+	@Access(AccessType.PROPERTY)
+	@Column(name = "consumedOn")
 	public LocalDate getConsumedOn(){
 		return consumedOn.get();
 	}
@@ -57,6 +107,8 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 		return consumedOn;
 	}
 	
+	@Access(AccessType.PROPERTY)
+	@Column(name = "addedOn")
 	public LocalDate getAddedOn(){
 		return addedOn.get();
 	}
@@ -74,6 +126,8 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 		}
 	}
 	
+	@Access(AccessType.PROPERTY)
+	@Column(name = "spoilOn")
 	public LocalDate getSpoilDate(){
 		return this.spoilDateProperty().get();
 	}
@@ -99,7 +153,7 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 		}
 		final var diff = Long.compare(this.getDaysLeft(), o.getDaysLeft());
 		if(diff == 0){
-			return Boolean.compare(o.isOpen(), this.isOpen());
+			return Boolean.compare(o.getIsOpen(), this.getIsOpen());
 		}
 		return diff;
 	}
@@ -108,7 +162,9 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 		return this.daysLeftProperty().get();
 	}
 	
-	public boolean isOpen(){
+	@Access(AccessType.PROPERTY)
+	@Column(name = "open")
+	public boolean getIsOpen(){
 		return this.isOpenProperty().get();
 	}
 	
@@ -120,10 +176,23 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 		return this.isOpen;
 	}
 	
+	@Access(AccessType.PROPERTY)
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "productId")
 	public Product getProduct(){
-		return product;
+		return productProperty().get();
 	}
 	
+	public void setProduct(Product product){
+		this.product.set(product);
+	}
+	
+	private SimpleObjectProperty<Product> productProperty(){
+		return this.product;
+	}
+	
+	@Access(AccessType.PROPERTY)
+	@Column(name = "subCount")
 	public int getSubCount(){
 		return this.subCountProperty().get();
 	}
@@ -136,7 +205,9 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 		this.subCountProperty().set(subCount);
 	}
 	
-	public boolean isConsumed(){
+	@Access(AccessType.PROPERTY)
+	@Column(name = "consumed")
+	public boolean getIsConsumed(){
 		return this.isConsumedProperty().get();
 	}
 	

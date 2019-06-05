@@ -5,6 +5,7 @@ import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.stage.Stage;
+import lombok.Getter;
 
 /**
  * Created by mrcraftcod (MrCraftCod - zerderr@gmail.com) on 2019-04-20.
@@ -13,6 +14,7 @@ import javafx.stage.Stage;
  * @since 2019-04-20
  */
 public class ConsumedProductsTab extends Tab{
+	@Getter
 	private final MainController controller;
 	
 	public ConsumedProductsTab(final Stage parentStage, final MainController controller){
@@ -23,7 +25,7 @@ public class ConsumedProductsTab extends Tab{
 	}
 	
 	private Node createContent(final Stage parentStage){
-		final var productsTable = new ConsumedProductTableView(parentStage, this.controller);
+		final var productsTable = new ConsumedProductTableView(parentStage, this.getController());
 		productsTable.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 		return productsTable;
 	}

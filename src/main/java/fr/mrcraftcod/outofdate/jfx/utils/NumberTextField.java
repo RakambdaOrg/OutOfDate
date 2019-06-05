@@ -2,8 +2,7 @@ package fr.mrcraftcod.outofdate.jfx.utils;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.TextField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by mrcraftcod (MrCraftCod - zerderr@gmail.com) on 2019-04-21.
@@ -11,8 +10,8 @@ import org.slf4j.LoggerFactory;
  * @author Thomas Couchoud
  * @since 2019-04-21
  */
+@Slf4j
 public class NumberTextField extends TextField{
-	private static final Logger LOGGER = LoggerFactory.getLogger(NumberTextField.class);
 	private final SimpleIntegerProperty number = new SimpleIntegerProperty(1);
 	
 	public NumberTextField(final int defaultValue){
@@ -28,7 +27,7 @@ public class NumberTextField extends TextField{
 				number.set(getText().isBlank() ? 0 : Integer.parseInt(getText()));
 			}
 			catch(final Exception e){
-				LOGGER.warn("{}", e.getMessage());
+				log.warn("{}", e.getMessage());
 				this.setText(Integer.toString(number.get()));
 			}
 		}
@@ -42,7 +41,7 @@ public class NumberTextField extends TextField{
 				number.set(getText().isBlank() ? 0 : Integer.parseInt(getText()));
 			}
 			catch(final Exception e){
-				LOGGER.warn("{}", e.getMessage());
+				log.warn("{}", e.getMessage());
 				this.setText(Integer.toString(number.get()));
 			}
 		}

@@ -2,9 +2,8 @@ package fr.mrcraftcod.outofdate.utils;
 
 import fr.mrcraftcod.outofdate.model.Product;
 import fr.mrcraftcod.utils.http.requestssenders.get.JSONGetRequestSender;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -16,11 +15,10 @@ import java.util.Optional;
  * @author Thomas Couchoud
  * @since 2019-04-20
  */
+@Slf4j
 public class OpenFoodFacts{
-	private static final Logger LOGGER = LoggerFactory.getLogger(OpenFoodFacts.class);
-	
 	public static Optional<Product> getProduct(final String productID){
-		LOGGER.info("Getting information on product {}", productID);
+		log.info("Getting information on product {}", productID);
 		try{
 			final var requestJSON = new JSONGetRequestSender(new URL(String.format("https://world.openfoodfacts.org/api/v0/product/%s.json", productID))).getRequestHandler();
 			if(requestJSON.getStatus() == 200){
@@ -29,15 +27,15 @@ public class OpenFoodFacts{
 					return Optional.of(parseJsonProduct(jsonResponse.getJSONObject("product")));
 				}
 				else{
-					LOGGER.warn("JSON has status {} : {}", jsonResponse.optInt("status", 0), jsonResponse.optString("status_verbose", "<empty>"));
+					log.warn("JSON has status {} : {}", jsonResponse.optInt("status", 0), jsonResponse.optString("status_verbose", "<empty>"));
 				}
 			}
 			else{
-				LOGGER.warn("API replied with code {}", requestJSON.getStatus());
+				log.warn("API replied with code {}", requestJSON.getStatus());
 			}
 		}
 		catch(final MalformedURLException | URISyntaxException e){
-			LOGGER.warn("Wrong url for product '{}'", productID);
+			log.warn("Wrong url for product '{}'", productID);
 		}
 		return Optional.empty();
 	}
@@ -48,7 +46,7 @@ public class OpenFoodFacts{
 				return new URL(urlStr);
 			}
 			catch(MalformedURLException e){
-				LOGGER.warn("Image URl for product not recognized: {}", urlStr);
+				log.warn("Image URl for product not recognized: {}", urlStr);
 			}
 			return null;
 		}).orElse(null));

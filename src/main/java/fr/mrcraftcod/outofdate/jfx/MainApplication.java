@@ -15,6 +15,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
  * @author Thomas Couchoud
  * @since 2019-04-20
  */
+@Slf4j
 public class MainApplication extends ApplicationBase{
 	private MainController controller;
 	private TabPane tabPane;
@@ -94,6 +96,13 @@ public class MainApplication extends ApplicationBase{
 	
 	@Override
 	public Consumer<Stage> getStageHandler(){
-		return stage -> stage.setOnCloseRequest(cl -> this.controller.saveData());
+		return stage -> stage.setOnCloseRequest(cl -> {
+			try{
+				this.controller.close();
+			}
+			catch(Exception e){
+				log.error("Failed to close controller", e);
+			}
+		});
 	}
 }

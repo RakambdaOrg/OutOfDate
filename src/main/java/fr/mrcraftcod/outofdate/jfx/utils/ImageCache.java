@@ -24,8 +24,6 @@ public class ImageCache{
 		if(image != null){
 			return image;
 		}
-		
-		//Create new Image
 		image = new Image(identifier.toString(), true);
 		addToCache(identifier, image);
 		return image;

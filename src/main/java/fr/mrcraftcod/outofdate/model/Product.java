@@ -3,6 +3,7 @@ package fr.mrcraftcod.outofdate.model;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import javax.persistence.*;
 import java.net.URL;
 
 /**
@@ -11,14 +12,28 @@ import java.net.URL;
  * @author Thomas Couchoud
  * @since 2019-04-20
  */
+@Entity
+@Table(name = "Products")
+@Access(AccessType.FIELD)
 public class Product{
-	private final String ID;
+	@Transient
+	private final SimpleStringProperty id;
+	@Transient
 	private final SimpleStringProperty name;
+	@Transient
 	private final SimpleObjectProperty<URL> image;
+	@Transient
 	private final SimpleStringProperty nutriscore;
 	
+	public Product(){
+		this.id = new SimpleStringProperty();
+		this.name = new SimpleStringProperty();
+		this.image = new SimpleObjectProperty<>();
+		this.nutriscore = new SimpleStringProperty();
+	}
+	
 	public Product(final String id, final String name, final URL image){
-		this.ID = id;
+		this.id = new SimpleStringProperty(id);
 		this.name = new SimpleStringProperty(name);
 		this.image = new SimpleObjectProperty<>(image);
 		this.nutriscore = new SimpleStringProperty();
@@ -26,17 +41,27 @@ public class Product{
 	
 	@Override
 	public String toString(){
-		return new ToStringBuilder(this).append("ID", this.getID()).append("name", this.getName()).append("image", this.getImage()).toString();
+		return new ToStringBuilder(this).append("ID", this.getId()).append("name", this.getName()).append("image", this.getImage()).toString();
 	}
 	
-	public String getID(){
-		return this.ID;
+	@Id
+	@Access(AccessType.PROPERTY)
+	public String getId(){
+		return this.idProperty().get();
 	}
 	
+	private SimpleStringProperty idProperty(){
+		return this.id;
+	}
+	
+	@Access(AccessType.PROPERTY)
+	@Column(name = "name")
 	public String getName(){
 		return this.nameProperty().get();
 	}
 	
+	@Access(AccessType.PROPERTY)
+	@Column(name = "imageURL")
 	public URL getImage(){
 		return this.imageProperty().get();
 	}
@@ -57,6 +82,8 @@ public class Product{
 		this.nameProperty().set(name);
 	}
 	
+	@Access(AccessType.PROPERTY)
+	@Column(name = "nutriscore")
 	public String getNutriscore(){
 		return this.nutriscoreProperty().get();
 	}
@@ -67,5 +94,9 @@ public class Product{
 	
 	public SimpleStringProperty nutriscoreProperty(){
 		return this.nutriscore;
+	}
+	
+	public void setId(String id){
+		this.id.set(id);
 	}
 }

@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.Getter;
 import java.time.LocalDate;
 
 /**
@@ -19,6 +20,7 @@ import java.time.LocalDate;
  * @since 2019-04-20
  */
 public class ProductsTab extends Tab{
+	@Getter
 	private final MainController controller;
 	
 	public ProductsTab(final Stage parentStage, final MainController controller){
@@ -31,7 +33,7 @@ public class ProductsTab extends Tab{
 	private Node createContent(final Stage parentStage){
 		final var root = new VBox();
 		
-		final var productsTable = new ProductTableView(parentStage, this.controller);
+		final var productsTable = new ProductTableView(parentStage, this.getController());
 		productsTable.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 		
 		final var addProductButton = new Button(LangUtils.getString("products_tab_add_product_button"));
@@ -48,19 +50,17 @@ public class ProductsTab extends Tab{
 	}
 	
 	public void addProduct(){
-		final var dialog = new AutoCompleteTextInputDialog(this.controller.getProductsHints());
+		final var dialog = new AutoCompleteTextInputDialog(this.getController().getProductsHints());
 		dialog.setTitle(LangUtils.getString("products_tab_add_product_dialog_title"));
 		dialog.setHeaderText(LangUtils.getString("products_tab_add_product_dialog_header"));
 		dialog.setContentText(LangUtils.getString("products_tab_add_product_dialog_content"));
 		
-		final var result = dialog.showAndWait();
-		result.ifPresent(s -> {
-			var id = result.get();
-			final var toldIndex = id.indexOf(this.controller.getProductHintSeparator());
+		dialog.showAndWait().ifPresent(id -> {
+			final var toldIndex = id.indexOf(this.getController().getProductHintSeparator());
 			if(toldIndex > 0){
 				id = id.substring(0, toldIndex);
 			}
-			this.controller.addNewOwnedProduct(id).ifPresent(owned -> owned.setAddedOn(LocalDate.now()));
+			this.getController().addNewOwnedProduct(id).ifPresent(owned -> owned.setAddedOn(LocalDate.now()));
 		});
 	}
 }

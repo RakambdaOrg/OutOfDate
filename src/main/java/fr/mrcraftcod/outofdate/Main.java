@@ -2,8 +2,6 @@ package fr.mrcraftcod.outofdate;
 
 import fr.mrcraftcod.outofdate.jfx.MainApplication;
 import javafx.application.Application;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Main class.
@@ -14,8 +12,6 @@ import org.slf4j.LoggerFactory;
  * @since 2016-12-19
  */
 public class Main{
-	private final static Logger LOGGER = LoggerFactory.getLogger(Main.class);
-	
 	/**
 	 * Main method.
 	 *
