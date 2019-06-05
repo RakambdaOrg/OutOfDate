@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,8 +21,10 @@ public class HBDatabase implements AutoCloseable{
 	private static final Logger log = LoggerFactory.getLogger(HBDatabase.class);
 	private final SessionFactory sessionFactory;
 	
-	public HBDatabase(){
-		this.sessionFactory = new Configuration().configure(Main.class.getResource("/hibernate.cfg.xml")).buildSessionFactory();
+	public HBDatabase(Path dbFile){
+		Configuration conf = new Configuration().configure(Main.class.getResource("/hibernate.cfg.xml"));
+		conf.setProperty("hibernate.connection.url", "jdbc:sqlite:" + dbFile.normalize().toString());
+		this.sessionFactory = conf.buildSessionFactory();
 	}
 	
 	@Override

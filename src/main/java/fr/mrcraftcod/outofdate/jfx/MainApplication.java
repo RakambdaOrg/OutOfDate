@@ -1,9 +1,14 @@
 package fr.mrcraftcod.outofdate.jfx;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
+import fr.mrcraftcod.outofdate.Main;
 import fr.mrcraftcod.outofdate.jfx.table.consumed.ConsumedProductsTab;
 import fr.mrcraftcod.outofdate.jfx.table.products.ProductsTab;
 import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
+import fr.mrcraftcod.outofdate.utils.CLIParameters;
 import fr.mrcraftcod.utils.javafx.ApplicationBase;
+import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -28,15 +33,29 @@ import java.util.function.Consumer;
  */
 public class MainApplication extends ApplicationBase{
 	private static final Logger log = LoggerFactory.getLogger(MainApplication.class);
+	private static CLIParameters cliParameters;
 	private MainController controller;
 	private TabPane tabPane;
 	private ProductsTab productsTab;
 	private ConsumedProductsTab consumedProductsTab;
 	
+	public static void main(String[] args){
+		log.info("Starting OutOfFood version {}", Main.getMavenVersion());
+		cliParameters = new CLIParameters();
+		try{
+			JCommander.newBuilder().addObject(cliParameters).build().parse(args);
+		}
+		catch(final ParameterException e){
+			log.error("Failed to parse arguments: {}", e.getMessage());
+			return;
+		}
+		Application.launch(args);
+	}
+	
 	@Override
 	public void preInit() throws Exception{
 		super.preInit();
-		this.controller = new MainController();
+		this.controller = new MainController(cliParameters);
 	}
 	
 	@Override

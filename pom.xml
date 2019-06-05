@@ -7,7 +7,7 @@
     <name>OutOfDate</name>
     <groupId>fr.mrcraftcod</groupId>
     <artifactId>outofdate</artifactId>
-    <version>0.0.3</version>
+    <version>0.1.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -221,6 +221,12 @@
 <!--            <artifactId>lombok</artifactId>-->
 <!--            <version>${lombok.version}</version>-->
 <!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/com.beust/jcommander -->
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.72</version>
+        </dependency>
     </dependencies>
 
     <profiles>

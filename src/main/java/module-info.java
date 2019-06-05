@@ -6,6 +6,7 @@
 open module fr.mrcraftcod.outofdate {
 	requires org.json;
 	requires org.apache.commons.lang3;
+	requires jcommander;
 	
 	requires org.slf4j;
 	requires ch.qos.logback.classic;
@@ -25,4 +26,5 @@ open module fr.mrcraftcod.outofdate {
 	
 	exports fr.mrcraftcod.outofdate.jfx to javafx.graphics;
 	exports fr.mrcraftcod.outofdate.model;
+	exports fr.mrcraftcod.outofdate.utils;
 }

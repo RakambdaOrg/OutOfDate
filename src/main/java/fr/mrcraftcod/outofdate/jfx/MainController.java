@@ -1,6 +1,7 @@
 package fr.mrcraftcod.outofdate.jfx;
 
 import fr.mrcraftcod.outofdate.model.OwnedProduct;
+import fr.mrcraftcod.outofdate.utils.CLIParameters;
 import fr.mrcraftcod.outofdate.utils.HBDatabase;
 import fr.mrcraftcod.outofdate.utils.OpenFoodFacts;
 import javafx.beans.Observable;
@@ -25,8 +26,8 @@ public class MainController implements AutoCloseable{
 	private final static String productHintSeparator = "~";
 	private final HBDatabase db;
 	
-	public MainController(){
-		this.db = new HBDatabase();
+	public MainController(final CLIParameters parameters){
+		this.db = new HBDatabase(parameters.getDbPath());
 		this.ownedProducts = FXCollections.observableArrayList(p -> new Observable[]{
 				p.isOpenProperty(),
 				p.spoilDateProperty(),
