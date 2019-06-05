@@ -1,7 +1,6 @@
 package fr.mrcraftcod.outofdate;
 
 import fr.mrcraftcod.outofdate.jfx.MainApplication;
-import javafx.application.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
@@ -24,7 +23,7 @@ public class Main{
 	 * @param args The arguments of the program:
 	 */
 	public static void main(final String[] args){
-		Application.launch(MainApplication.class, args);
+		MainApplication.main(args);
 	}
 	
 	/**

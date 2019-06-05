@@ -22,6 +22,7 @@ public class HBDatabase implements AutoCloseable{
 	private final SessionFactory sessionFactory;
 	
 	public HBDatabase(Path dbFile){
+		log.info("Connection to DB file {}", dbFile);
 		Configuration conf = new Configuration().configure(Main.class.getResource("/hibernate.cfg.xml"));
 		conf.setProperty("hibernate.connection.url", "jdbc:sqlite:" + dbFile.normalize().toString());
 		this.sessionFactory = conf.buildSessionFactory();
