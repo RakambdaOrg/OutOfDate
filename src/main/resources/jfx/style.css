@@ -6,6 +6,14 @@ table-view {
     -fx-background-color: transparent;
 }
 
+.table-row-cell:empty {
+    -fx-background-color: cornsilk;
+}
+
+.table-row-cell:empty .table-cell {
+    -fx-border-width: 0px;
+}
+
 .table-row-cell:filled .product_expired {
     -fx-background-color: -fx-table-cell-border-color, #ffa3c7;
     -fx-background-insets: 0, 0 0 1 0;
@@ -15,7 +23,7 @@ table-view {
 }
 
 .table-row-cell:filled .product_opened {
-    -fx-background-color: -fx-table-cell-border-color, #ffeeb8;
+    -fx-background-color: #ffeeb8;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-border-color: #c3c3c3;
     -fx-border-insets: 0 0 0 0;

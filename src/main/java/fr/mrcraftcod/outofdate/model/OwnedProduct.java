@@ -81,25 +81,17 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 		this.isConsumedProperty().addListener((observableValue, status, t1) -> updateState());
 		this.addedOnProperty().addListener((observableValue, status, t1) -> updateState());
 		this.daysLeftProperty().addListener((observableValue, count, t1) -> updateState());
-		this.stateProperty().addListener((observableValue, state, t1) -> LOGGER.info("{}", t1));
 	}
 	
 	private void updateState(){
-		if(this.isExpired() && this.getIsOpen()){
-			if(Objects.nonNull(this.getConsumedOn())){
-				this.setState(ProductState.EATEN);
-			}
-			else{
-				this.setState(ProductState.OPENED_EXPIRED);
-			}
+		if(Objects.nonNull(this.getConsumedOn())){
+			this.setState(ProductState.EATEN);
+		}
+		else if(this.isExpired() && this.getIsOpen()){
+			this.setState(ProductState.OPENED_EXPIRED);
 		}
 		else if(this.isExpired()){
-			if(Objects.nonNull(this.getConsumedOn())){
-				this.setState(ProductState.EATEN);
-			}
-			else{
-				this.setState(ProductState.EXPIRED);
-			}
+			this.setState(ProductState.EXPIRED);
 		}
 		else if(this.getIsOpen()){
 			this.setState(ProductState.OPENED);
