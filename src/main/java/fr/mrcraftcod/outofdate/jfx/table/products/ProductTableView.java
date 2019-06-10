@@ -8,9 +8,13 @@ import fr.mrcraftcod.outofdate.jfx.utils.LangUtils;
 import fr.mrcraftcod.outofdate.model.OwnedProduct;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import java.net.URL;
 import java.util.Objects;
@@ -32,7 +36,7 @@ public class ProductTableView extends TableView<OwnedProduct>{
 	public ProductTableView(final Stage parentStage, final MainController controller){
 		super();
 		this.controller = controller;
-		this.setSortPolicy(cell -> false);
+		this.setSortPolicy(cell -> true);
 		final var columnID = new TableColumn<OwnedProduct, String>(LangUtils.getString("product_table_column_id"));
 		columnID.setCellValueFactory(obj -> new SimpleStringProperty(obj.getValue().getProduct().getId()));
 		columnID.setCellFactory(cb -> new ProductTableCell<>(this.getOnProductEdit(parentStage)));
@@ -56,14 +60,33 @@ public class ProductTableView extends TableView<OwnedProduct>{
 		columnNutriscore.setCellFactory(cb -> new ProductTableCell<>(this.getOnProductEdit(parentStage)));
 		this.getColumns().addAll(columnID, columnName, columnPicture, columnDaysLeft, columnOpen, columnSubCount, columnNutriscore);
 		this.setItems(createList());
-		this.setOnKeyPressed(keyEvent -> {
-			if(keyEvent.getCode().equals(KeyCode.DELETE)){
-				final OwnedProduct selectedItem = ProductTableView.this.getSelectionModel().getSelectedItem();
-				if(Objects.nonNull(selectedItem)){
-					controller.removeOwnedProduct(selectedItem);
+		this.addEventHandler(MouseEvent.MOUSE_CLICKED, t -> {
+			final OwnedProduct selectedItem = ProductTableView.this.getSelectionModel().getSelectedItem();
+			if(Objects.nonNull(selectedItem)){
+				if(t.getButton() == MouseButton.SECONDARY){
+					ContextMenu cm = new ContextMenu();
+					MenuItem menuDuplicate = new MenuItem(LangUtils.getString("product_table_menu_duplicate"));
+					menuDuplicate.setOnAction(evt -> controller.duplicateOwnedProduct(selectedItem));
+					cm.getItems().add(menuDuplicate);
+					MenuItem menuDelete = new MenuItem(LangUtils.getString("product_table_menu_delete"));
+					menuDelete.setOnAction(evt -> controller.removeOwnedProduct(selectedItem));
+					cm.getItems().add(menuDelete);
+					cm.show(ProductTableView.this, t.getScreenX(), t.getScreenY());
 				}
 			}
 		});
+		this.setOnKeyPressed(keyEvent -> {
+			final OwnedProduct selectedItem = ProductTableView.this.getSelectionModel().getSelectedItem();
+			if(Objects.nonNull(selectedItem)){
+				if(keyEvent.getCode().equals(KeyCode.DELETE)){
+					controller.removeOwnedProduct(selectedItem);
+				}
+				else if(keyEvent.isControlDown() && keyEvent.getCode().equals(KeyCode.D)){
+					controller.duplicateOwnedProduct(selectedItem);
+				}
+			}
+		});
+		this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 	}
 	
 	protected Consumer<OwnedProduct> getOnProductEdit(final Stage parentStage){

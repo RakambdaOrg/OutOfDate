@@ -102,6 +102,7 @@ public class MainApplication extends ApplicationBase{
 	@Override
 	public Parent createContent(final Stage stage){
 		final var borderPane = new BorderPane();
+		borderPane.getStylesheets().add("/jfx/style.css");
 		
 		this.productsTab = new ProductsTab(stage, this.controller);
 		this.consumedProductsTab = new ConsumedProductsTab(stage, this.controller);

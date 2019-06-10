@@ -8,6 +8,7 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
@@ -37,12 +38,7 @@ public class MainController implements AutoCloseable{
 				p.getProduct().imageProperty(),
 				p.getProduct().nutriscoreProperty()
 		});
-		this.ownedProducts.addListener(new ListChangeListener<OwnedProduct>(){
-			@Override
-			public void onChanged(Change<? extends OwnedProduct> change){
-				change.getList().forEach(db::updateOwnedProduct);
-			}
-		});
+		this.ownedProducts.addListener((ListChangeListener<OwnedProduct>) change -> change.getList().forEach(db::updateOwnedProduct));
 		this.ownedProducts.addAll(db.getOwnedProducts());
 	}
 	
@@ -56,6 +52,17 @@ public class MainController implements AutoCloseable{
 			this.ownedProducts.remove(ownedProduct);
 	}
 	
+	public void duplicateOwnedProduct(OwnedProduct ownedProduct){
+		addNewOwnedProduct(ownedProduct.getProduct().getId()).ifPresent(newProduct -> {
+			newProduct.setAddedOn(LocalDate.now());
+			newProduct.setConsumedOn(ownedProduct.getConsumedOn());
+			newProduct.setIsConsumed(ownedProduct.getIsConsumed());
+			newProduct.setIsOpen(ownedProduct.getIsOpen());
+			newProduct.setSpoilDate(ownedProduct.getSpoilDate());
+			newProduct.setSubCount(ownedProduct.getSubCount());
+		});
+	}
+	
 	public List<String> getProductsHints(){
 		return this.db.getProducts().stream().map(p -> String.format("%s%s%s", p.getId(), this.getProductHintSeparator(), p.getName())).distinct().collect(Collectors.toList());
 	}
@@ -64,9 +71,9 @@ public class MainController implements AutoCloseable{
 		return productHintSeparator;
 	}
 	
-	public Optional<OwnedProduct> addNewOwnedProduct(final String id){
-		return this.db.getProduct(id).or(() -> {
-			final var product = OpenFoodFacts.getProduct(id);
+	public Optional<OwnedProduct> addNewOwnedProduct(final String productId){
+		return this.db.getProduct(productId).or(() -> {
+			final var product = OpenFoodFacts.getProduct(productId);
 			product.ifPresent(this.db::persistProduct);
 			return product;
 		}).map(product -> {

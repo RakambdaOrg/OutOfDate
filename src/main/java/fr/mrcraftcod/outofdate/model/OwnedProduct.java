@@ -4,6 +4,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -19,6 +21,7 @@ import java.util.Objects;
 @Table(name = "OwnedProducts")
 @Access(AccessType.FIELD)
 public class OwnedProduct implements Comparable<OwnedProduct>{
+	private static final Logger LOGGER = LoggerFactory.getLogger(OwnedProduct.class);
 	@Transient
 	private final SimpleObjectProperty<Product> product;
 	@Transient
@@ -37,41 +40,90 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 	private final SimpleObjectProperty<LocalDate> addedOn;
 	@Transient
 	private final SimpleObjectProperty<LocalDate> consumedOn;
+	@Transient
+	private final SimpleObjectProperty<ProductState> state;
 	
 	public OwnedProduct(){
 		this.product = new SimpleObjectProperty<>();
 		this.id = new SimpleIntegerProperty();
 		this.spoilDate = new SimpleObjectProperty<>(null);
 		this.spoilDate.addListener(evt -> this.updateRemainingDays());
-		this.daysLeft = new SimpleLongProperty(-1);
+		this.daysLeft = new SimpleLongProperty(Integer.MIN_VALUE);
 		this.isOpen = new SimpleBooleanProperty(false);
 		this.subCount = new SimpleIntegerProperty(0);
 		this.isConsumed = new SimpleBooleanProperty(false);
-		this.isConsumed.addListener((obj, oldV, newV) -> {
-			if(newV && Objects.isNull(this.getConsumedOn())){
-				this.setConsumedOn(LocalDate.now());
-			}
-		});
 		this.addedOn = new SimpleObjectProperty<>();
 		this.consumedOn = new SimpleObjectProperty<>();
+		this.state = new SimpleObjectProperty<>(ProductState.CLOSED);
+		setupListeners();
+		updateState();
 	}
 	
 	public OwnedProduct(final Product product){
-		this.product = new SimpleObjectProperty<>(product);
-		this.id = new SimpleIntegerProperty();
-		this.spoilDate = new SimpleObjectProperty<>(null);
-		this.spoilDate.addListener(evt -> this.updateRemainingDays());
-		this.daysLeft = new SimpleLongProperty(-1);
-		this.isOpen = new SimpleBooleanProperty(false);
-		this.subCount = new SimpleIntegerProperty(0);
-		this.isConsumed = new SimpleBooleanProperty(false);
+		this();
+		this.setProduct(product);
+	}
+	
+	public SimpleObjectProperty<ProductState> stateProperty(){
+		return state;
+	}
+	
+	private void setupListeners(){
 		this.isConsumed.addListener((obj, oldV, newV) -> {
 			if(newV && Objects.isNull(this.getConsumedOn())){
 				this.setConsumedOn(LocalDate.now());
 			}
 		});
-		this.addedOn = new SimpleObjectProperty<>();
-		this.consumedOn = new SimpleObjectProperty<>();
+		this.consumedOnProperty().addListener((observableValue, localDate, t1) -> updateState());
+		this.spoilDateProperty().addListener((observableValue, localDate, t1) -> updateState());
+		this.isOpenProperty().addListener((observableValue, status, t1) -> updateState());
+		this.subCountProperty().addListener((observableValue, count, t1) -> updateState());
+		this.isConsumedProperty().addListener((observableValue, status, t1) -> updateState());
+		this.addedOnProperty().addListener((observableValue, status, t1) -> updateState());
+		this.daysLeftProperty().addListener((observableValue, count, t1) -> updateState());
+		this.stateProperty().addListener((observableValue, state, t1) -> LOGGER.info("{}", t1));
+	}
+	
+	private void updateState(){
+		if(this.isExpired() && this.getIsOpen()){
+			if(Objects.nonNull(this.getConsumedOn())){
+				this.setState(ProductState.EATEN);
+			}
+			else{
+				this.setState(ProductState.OPENED_EXPIRED);
+			}
+		}
+		else if(this.isExpired()){
+			if(Objects.nonNull(this.getConsumedOn())){
+				this.setState(ProductState.EATEN);
+			}
+			else{
+				this.setState(ProductState.EXPIRED);
+			}
+		}
+		else if(this.getIsOpen()){
+			this.setState(ProductState.OPENED);
+		}
+		else{
+			this.setState(ProductState.CLOSED);
+		}
+	}
+	
+	private SimpleObjectProperty<LocalDate> addedOnProperty(){
+		return addedOn;
+	}
+	
+	private void updateRemainingDays(){
+		if(Objects.isNull(getSpoilDate())){
+			this.daysLeft.setValue(-9999999);
+		}
+		else{
+			this.daysLeft.set(LocalDate.now().until(getSpoilDate(), ChronoUnit.DAYS));
+		}
+	}
+	
+	private long getDaysLeft(){
+		return this.daysLeftProperty().get();
 	}
 	
 	@Id
@@ -99,8 +151,8 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 		this.consumedOn.set(consumedOn);
 	}
 	
-	public SimpleObjectProperty<LocalDate> addedOnProperty(){
-		return addedOn;
+	public ProductState getState(){
+		return state.get();
 	}
 	
 	public SimpleObjectProperty<LocalDate> consumedOnProperty(){
@@ -117,13 +169,8 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 		this.addedOn.set(addedOn);
 	}
 	
-	public void updateRemainingDays(){
-		if(Objects.isNull(getSpoilDate())){
-			this.daysLeft.setValue(-9999999);
-		}
-		else{
-			this.daysLeft.set(LocalDate.now().until(getSpoilDate(), ChronoUnit.DAYS));
-		}
+	public void setState(ProductState state){
+		this.state.set(state);
 	}
 	
 	@Access(AccessType.PROPERTY)
@@ -158,8 +205,11 @@ public class OwnedProduct implements Comparable<OwnedProduct>{
 		return diff;
 	}
 	
-	public long getDaysLeft(){
-		return this.daysLeftProperty().get();
+	private boolean isExpired(){
+		if(Objects.isNull(getSpoilDate())){
+			return false;
+		}
+		return LocalDate.now().isAfter(this.getSpoilDate());
 	}
 	
 	@Access(AccessType.PROPERTY)
