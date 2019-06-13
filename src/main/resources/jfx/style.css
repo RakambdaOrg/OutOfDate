@@ -14,6 +14,15 @@ table-view {
     -fx-border-width: 0px;
 }
 
+.table-row-cell:filled .product_closed {
+    -fx-background-color: -fx-table-cell-border-color, #eeeeee;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-border-color: #c3c3c3;
+    -fx-border-insets: 0 0 0 0;
+    -fx-text-fill: black;
+}
+
+
 .table-row-cell:filled .product_expired {
     -fx-background-color: -fx-table-cell-border-color, #ffa3c7;
     -fx-background-insets: 0, 0 0 1 0;
@@ -31,11 +40,19 @@ table-view {
 }
 
 .table-row-cell:filled .product_eaten {
-    -fx-background-color: -fx-table-cell-border-color, #a3ffa4;
+    -fx-background-color: -fx-table-cell-border-color, #eeeeee;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-border-color: #c3c3c3;
     -fx-border-insets: 0 0 0 0;
     -fx-text-fill: black;
+}
+
+.table-row-cell:filled:selected .product_closed {
+    -fx-background-color: -fx-table-cell-border-color, #ffffff;
+    -fx-text-fill: black;
+    -fx-border-color: #c3c3c3;
+    -fx-border-insets: 0 0 0 0;
+    -fx-background-insets: 0;
 }
 
 .table-row-cell:filled:selected .product_expired {
@@ -55,7 +72,7 @@ table-view {
 }
 
 .table-row-cell:filled:selected .product_eaten {
-    -fx-background-color: -fx-table-cell-border-color, #4bff53;
+    -fx-background-color: -fx-table-cell-border-color, #ffffff;
     -fx-text-fill: black;
     -fx-border-color: #c3c3c3;
     -fx-border-insets: 0 0 0 0;

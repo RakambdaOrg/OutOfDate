@@ -7,7 +7,7 @@
     <name>OutOfDate</name>
     <groupId>fr.mrcraftcod</groupId>
     <artifactId>outofdate</artifactId>
-    <version>0.1.2</version>
+    <version>0.1.3</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,9 +15,10 @@
         <main.class>fr.mrcraftcod.outofdate.Main</main.class>
         <final.name>OutOfDate</final.name>
         <mrcraftcod.utils.version>12.0.5</mrcraftcod.utils.version>
-        <slf4j.version>1.8.0-beta4</slf4j.version>
+        <slf4j.version>2.0.0-alpha0</slf4j.version>
         <javafx.version>12</javafx.version>
         <lombok.version>1.18.8</lombok.version>
+        <hibernate.version>5.4.3.Final</hibernate.version>
     </properties>
     <packaging>jar</packaging>
 
@@ -198,7 +199,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.4.3.Final</version>
+            <version>${hibernate.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
