@@ -45,6 +45,8 @@ public class ProductTableCell<T> extends TableCell<OwnedProduct, T>{
 	private void applyStyle(ProductState state){
 		ProductTableCell.this.getStyleClass().remove("product_expired");
 		ProductTableCell.this.getStyleClass().remove("product_opened");
+		ProductTableCell.this.getStyleClass().remove("product_eaten");
+		ProductTableCell.this.getStyleClass().remove("product_closed");
 		if(state == ProductState.EXPIRED || state == ProductState.OPENED_EXPIRED){
 			this.getStyleClass().add("product_expired");
 		}
@@ -53,6 +55,9 @@ public class ProductTableCell<T> extends TableCell<OwnedProduct, T>{
 		}
 		else if(state == ProductState.EATEN){
 			this.getStyleClass().add("product_eaten");
+		}
+		else{
+			this.getStyleClass().add("product_closed");
 		}
 	}
 	
