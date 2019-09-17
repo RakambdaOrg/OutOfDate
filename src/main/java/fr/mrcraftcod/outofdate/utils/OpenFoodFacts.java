@@ -23,7 +23,7 @@ public class OpenFoodFacts{
 		try{
 			final var requestJSON = new JSONGetRequestSender(new URL(String.format("https://world.openfoodfacts.org/api/v0/product/%s.json", productID))).getRequestHandler();
 			if(requestJSON.getStatus() == 200){
-				final var jsonResponse = requestJSON.getRequestResult();
+				final var jsonResponse = requestJSON.getRequestResult().getObject();
 				if(jsonResponse.has("status") && jsonResponse.optInt("status", 0) == 1){
 					return Optional.of(parseJsonProduct(jsonResponse.getJSONObject("product")));
 				}

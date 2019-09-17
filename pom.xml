@@ -14,11 +14,14 @@
         <java.version>12</java.version>
         <main.class>fr.mrcraftcod.outofdate.Main</main.class>
         <final.name>OutOfDate</final.name>
-        <mrcraftcod.utils.version>12.0.5</mrcraftcod.utils.version>
+        <mrcraftcod.utils.version>12.0.9</mrcraftcod.utils.version>
         <slf4j.version>2.0.0-alpha0</slf4j.version>
         <javafx.version>12</javafx.version>
         <lombok.version>1.18.8</lombok.version>
         <hibernate.version>5.4.3.Final</hibernate.version>
+        <jcommander.version>1.72</jcommander.version>
+        <json.version>20190722</json.version>
+        <sqlite.version>3.28.0</sqlite.version>
     </properties>
     <packaging>jar</packaging>
 
@@ -26,7 +29,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20180813</version>
+            <version>${json.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
@@ -70,23 +73,17 @@
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.27.2.1</version>
+            <version>${sqlite.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>2.4.0-b180830.0438</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.projectlombok</groupId>-->
-<!--            <artifactId>lombok</artifactId>-->
-<!--            <version>${lombok.version}</version>-->
-<!--        </dependency>-->
-        <!-- https://mvnrepository.com/artifact/com.beust/jcommander -->
         <dependency>
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
-            <version>1.72</version>
+            <version>${jcommander.version}</version>
         </dependency>
     </dependencies>
 
