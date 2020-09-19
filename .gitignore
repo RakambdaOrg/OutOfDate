@@ -1,9 +1,12 @@
-config.json
-*.iml
-*.db
 .idea
+.gradle
+build
 target
 
+*.iml
+*.db
+
+config.json
 products.json
 
 logs/

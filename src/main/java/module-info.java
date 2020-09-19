@@ -3,16 +3,17 @@
  *
  * @since 2018-01-23
  */
-open module fr.mrcraftcod.outofdate {
-	requires org.json;
+open module fr.raksrinana.outofdate {
 	requires org.apache.commons.lang3;
-	requires jcommander;
+	requires info.picocli;
 	
 	requires org.slf4j;
 	requires ch.qos.logback.classic;
 	
-	requires fr.mrcraftcod.utils.http;
-	requires fr.mrcraftcod.utils.javafx;
+	requires fr.raksrinana.utils.http;
+	requires fr.raksrinana.utils.javafx;
+	
+	requires unirest.java;
 	
 	requires java.xml;
 	requires java.xml.bind;
@@ -24,7 +25,12 @@ open module fr.mrcraftcod.outofdate {
 	requires org.hibernate.commons.annotations;
 	requires net.bytebuddy;
 	
-	exports fr.mrcraftcod.outofdate.jfx to javafx.graphics;
-	exports fr.mrcraftcod.outofdate.model;
-	exports fr.mrcraftcod.outofdate.utils;
+	requires javafx.base;
+	requires javafx.controls;
+	
+	requires static lombok;
+	
+	exports fr.raksrinana.outofdate.jfx to javafx.graphics;
+	exports fr.raksrinana.outofdate.model;
+	exports fr.raksrinana.outofdate.utils;
 }

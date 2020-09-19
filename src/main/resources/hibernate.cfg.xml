@@ -5,11 +5,11 @@
         <property name="connection.url"></property>
         <property name="connection.username"></property>
         <property name="connection.password"></property>
-        <property name="dialect">fr.mrcraftcod.outofdate.jpa.SQLiteDialect</property>
+        <property name="dialect">fr.raksrinana.outofdate.jpa.SQLiteDialect</property>
         <property name="show_sql">false</property>
         <property name="format_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
-        <mapping class="fr.mrcraftcod.outofdate.model.Product"/>
-        <mapping class="fr.mrcraftcod.outofdate.model.OwnedProduct"/>
+        <mapping class="fr.raksrinana.outofdate.model.Product"/>
+        <mapping class="fr.raksrinana.outofdate.model.OwnedProduct"/>
     </session-factory>
 </hibernate-configuration>
