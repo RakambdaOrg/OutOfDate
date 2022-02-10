@@ -18,7 +18,7 @@
         <slf4j.version>2.0.0-alpha0</slf4j.version>
         <javafx.version>12</javafx.version>
         <lombok.version>1.18.8</lombok.version>
-        <hibernate.version>5.4.3.Final</hibernate.version>
+        <hibernate.version>5.4.24.Final</hibernate.version>
         <jcommander.version>1.72</jcommander.version>
         <json.version>20190722</json.version>
         <sqlite.version>3.28.0</sqlite.version>
